@@ -1067,10 +1067,12 @@ async function loadDashboard(clientKey, displayName) {
     ]);
 
     // ── Stats ──
-    const totalDeuda = cuoteroData
-      ? cuoteroData.totalDeuda
-      : movimientos.reduce((s, m) => s + m.monto, 0);
+    // La deuda SIEMPRE se calcula desde los movimientos del Sheet base:
+    // ventas son positivas, pagos son negativos → la suma refleja el saldo real en tiempo real.
+    // NO usamos cuoteroData.totalDeuda porque es un valor estático que no se actualiza con los pagos.
+    const totalDeuda = Math.max(0, movimientos.reduce((s, m) => s + m.monto, 0));
 
+    // Las cuotas sí vienen del Cuotero (solo para el plan de pagos futuros)
     const cuotas = cuoteroData ? cuoteroData.cuotas : [];
     const numCuotas = cuotas.length;
 
@@ -1159,4 +1161,3 @@ function doLogout() {
 </script>
 </body>
 </html>
-
