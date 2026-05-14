@@ -703,379 +703,250 @@ body::after{
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────
-const DB = {
-  "clients": {
-    "FABIOLA FERREIRA": {
-      "nombre_display": "Fabiola Ferreira",
-      "total_deuda": 3286400,
-      "num_cuotas": 8,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 410800},
-        {"fecha": "2026-07", "monto": 410800},
-        {"fecha": "2026-08", "monto": 410800},
-        {"fecha": "2026-09", "monto": 410800},
-        {"fecha": "2026-10", "monto": 410800},
-        {"fecha": "2026-11", "monto": 410800},
-        {"fecha": "2026-12", "monto": 410800},
-        {"fecha": "2027-01", "monto": 410800}
-      ],
-      "movimientos": [
-        {"fecha": "2026-03-07", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE METCON", "monto": 900000},
-        {"fecha": "2026-03-07", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -225000},
-        {"fecha": "2026-03-31", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -225000},
-        {"fecha": "2026-05-02", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE 3/4", "monto": -225000},
-        {"fecha": "2026-05-08", "tipo": "VENTA", "producto": "CALZADO NIKE", "descripcion": "CALZADO NIKE", "monto": 1000000},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "ROPA", "descripcion": "CAMPERA NIKE JACKET", "monto": 463000},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "ROPA", "descripcion": "PANTALON MARRON", "monto": 401500},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "ROPA", "descripcion": "PANTALON VERDE", "monto": 401500},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "ROPA", "descripcion": "CAMPERA NIKE", "monto": 428400},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "ROPA", "descripcion": "SUETER", "monto": 367000}
-      ],
-      "username": "fabiolaferreira"
-    },
-    "LUZ SANABRIA": {
-      "nombre_display": "LUZ SANABRIA",
-      "total_deuda": 3230000,
-      "num_cuotas": 8,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 403750},
-        {"fecha": "2026-07", "monto": 403750},
-        {"fecha": "2026-08", "monto": 403750},
-        {"fecha": "2026-09", "monto": 403750},
-        {"fecha": "2026-10", "monto": 403750},
-        {"fecha": "2026-11", "monto": 403750},
-        {"fecha": "2026-12", "monto": 403750},
-        {"fecha": "2027-01", "monto": 403750}
-      ],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 273000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "REMERA", "descripcion": "REMERA 365", "monto": 64000},
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "REMERA", "descripcion": "REMERA DE OLIMPIA", "monto": 470000},
-        {"fecha": "2026-03-05", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "GENERAL", "monto": -337000},
-        {"fecha": "2026-04-08", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -117000},
-        {"fecha": "2026-04-16", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 544000},
-        {"fecha": "2026-05-05", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -117000},
-        {"fecha": "2026-05-13", "tipo": "VENTA", "producto": "TECNOLOGIA", "descripcion": "IPHONE 14 NORMAL", "monto": 2450000}
-      ],
-      "username": "luzsanabria"
-    },
-    "FERNANDO FERREIRA": {
-      "nombre_display": "FERNANDO FERREIRA",
-      "total_deuda": 2736000,
-      "num_cuotas": 8,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 342000},
-        {"fecha": "2026-07", "monto": 342000},
-        {"fecha": "2026-08", "monto": 342000},
-        {"fecha": "2026-09", "monto": 342000},
-        {"fecha": "2026-10", "monto": 342000},
-        {"fecha": "2026-11", "monto": 342000},
-        {"fecha": "2026-12", "monto": 342000},
-        {"fecha": "2027-01", "monto": 342000}
-      ],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "GENERAL", "descripcion": "GENERAL", "monto": 880000},
-        {"fecha": "2026-02-01", "tipo": "PAGO", "producto": "—", "descripcion": "PAGO", "monto": -500000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "MOCHILA", "descripcion": "MOCHILAS NIKE", "monto": 360000},
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE BABY", "monto": 170000},
-        {"fecha": "2026-02-19", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "ZAPATILLA NIKE", "monto": -170000},
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "ZAPATILLA NIKE BABY", "monto": 330000},
-        {"fecha": "2026-02-28", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "KIDS", "monto": -160000},
-        {"fecha": "2026-03-05", "tipo": "PAGO", "producto": "GENERAL", "descripcion": "GENERAL", "monto": -300000},
-        {"fecha": "2026-03-26", "tipo": "VENTA", "producto": "TECNOLOGIA", "descripcion": "AURICULAR BUDS 8", "monto": 220000},
-        {"fecha": "2026-04-01", "tipo": "VENTA", "producto": "INFORME", "descripcion": "INFORME MES DE FEBRERO", "monto": 100000},
-        {"fecha": "2026-04-01", "tipo": "PAGO", "producto": "—", "descripcion": "PAGO", "monto": -200000},
-        {"fecha": "2026-04-08", "tipo": "VENTA", "producto": "ELECTRODOMESTICO", "descripcion": "HELADERA MIDEA", "monto": 1896000},
-        {"fecha": "2026-04-07", "tipo": "PAGO", "producto": "INFORME", "descripcion": "INFORME MES DE MARZO", "monto": 100000},
-        {"fecha": "2026-05-02", "tipo": "PAGO", "producto": "GENERAL", "descripcion": "PAGO 1 DE 8", "monto": -400000},
-        {"fecha": "2026-05-08", "tipo": "VENTA", "producto": "INFORME", "descripcion": "INFORME MES DE ABRIL", "monto": 100000},
-        {"fecha": "2026-05-12", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "PERFUME AQUA", "monto": 310000}
-      ],
-      "username": "fernandoferreira"
-    },
-    "FRANCISCO CARDOZO": {
-      "nombre_display": "Francisco Cardozo",
-      "total_deuda": 870000,
-      "num_cuotas": 3,
-      "cuotas": [{"fecha": "2026-06", "monto": 290000}],
-      "movimientos": [
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "PELUCHE", "descripcion": "STITCH", "monto": 590000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "GENERAL", "descripcion": "CROCS + ADIDAS", "monto": 815000},
-        {"fecha": "2026-03-05", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "GENERAL", "monto": -352000},
-        {"fecha": "2026-04-09", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -353000},
-        {"fecha": "2026-04-16", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "BOTIN NIKE", "monto": 291000},
-        {"fecha": "2026-04-16", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "BOTIN NIKE", "monto": -121000}
-      ],
-      "username": "franciscocardozo"
-    },
-    "LUZ SALINAS": {
-      "nombre_display": "LUZ SALINAS",
-      "total_deuda": 641250,
-      "num_cuotas": 3,
-      "cuotas": [{"fecha": "2026-06", "monto": 213750}],
-      "movimientos": [
-        {"fecha": "2026-04-08", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "NIKE AIR FORCE 1", "monto": 855000},
-        {"fecha": "2026-04-30", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -213750}
-      ],
-      "username": "luzsalinas"
-    },
-    "JOSE BRITEZ": {
-      "nombre_display": "JOSE BRITEZ",
-      "total_deuda": 629000,
-      "num_cuotas": 2,
-      "cuotas": [{"fecha": "2026-06", "monto": 314500}],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO ADIDAS + ZAPA NIKE", "monto": 285000},
-        {"fecha": "2026-02-11", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO ADIDAS + ZAPA NIKE", "monto": -285000},
-        {"fecha": "2026-03-26", "tipo": "VENTA", "producto": "TECNOLOGIA", "descripcion": "HONOR X7D + AURICULAR", "monto": 1629000},
-        {"fecha": "2026-04-01", "tipo": "PAGO", "producto": "TECNOLOGIA", "descripcion": "HONOR X7D + AURICULAR", "monto": -500000},
-        {"fecha": "2026-05-04", "tipo": "PAGO", "producto": "CELULAR", "descripcion": "PAGO 2/3", "monto": -500000}
-      ],
-      "username": "josebritez"
-    },
-    "JUAN FLORES": {
-      "nombre_display": "JUAN FLORES",
-      "total_deuda": 559800,
-      "num_cuotas": 3,
-      "cuotas": [{"fecha": "2026-06", "monto": 186600}],
-      "movimientos": [
-        {"fecha": "2026-02-14", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "PERFUME TERIAQ", "monto": 200000},
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "REMERA", "descripcion": "REMERA DE OLIMPIA", "monto": 490000},
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "TERMO", "descripcion": "COOLTURE", "monto": 220000},
-        {"fecha": "2026-03-06", "tipo": "PAGO", "producto": "GENERAL", "descripcion": "1/4 PAGO", "monto": -227500},
-        {"fecha": "2026-04-18", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "REMERA MAS HOPPIE", "monto": -277500},
-        {"fecha": "2026-05-05", "tipo": "VENTA", "producto": "PELOTA", "descripcion": "PELOTA", "monto": 154800}
-      ],
-      "username": "juanflores"
-    },
-    "ELIAS": {
-      "nombre_display": "ELIAS",
-      "total_deuda": 420000,
-      "num_cuotas": 3,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 140000},
-        {"fecha": "2026-07", "monto": 140000},
-        {"fecha": "2026-08", "monto": 140000}
-      ],
-      "movimientos": [
-        {"fecha": "2026-04-24", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "HOMME WHITE", "monto": 180000},
-        {"fecha": "2026-05-03", "tipo": "PAGO", "producto": "GENERAL", "descripcion": "PERFUME", "monto": -180000},
-        {"fecha": "2026-05-08", "tipo": "VENTA", "producto": "BICICLETA", "descripcion": "BICICLETA", "monto": 420000}
-      ],
-      "username": "elias"
-    },
-    "RONALDO BENITEZ (LUMI)": {
-      "nombre_display": "RONALDO BENITEZ (LUMI)",
-      "total_deuda": 420000,
-      "num_cuotas": 2,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 210000},
-        {"fecha": "2026-07", "monto": 210000}
-      ],
-      "movimientos": [
-        {"fecha": "2026-04-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO JORDAN 1", "monto": 900000},
-        {"fecha": "2026-04-02", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "JORDAN 1", "monto": -240000},
-        {"fecha": "2026-05-05", "tipo": "PAGO", "producto": "CALZADO NIKE", "descripcion": "CALZADO NIKE", "monto": -240000}
-      ],
-      "username": "ronaldobenitezlumi"
-    },
-    "HERMANO DE LUZ": {
-      "nombre_display": "HERMANO DE LUZ",
-      "total_deuda": 376000,
-      "num_cuotas": 2,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 188000},
-        {"fecha": "2026-07", "monto": 188000}
-      ],
-      "movimientos": [
-        {"fecha": "2026-02-13", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE VOMERO", "monto": 750000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "ZAPATILLA NIKE", "monto": 371000},
-        {"fecha": "2026-02-11", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "ZAPATILLA NIKE", "monto": -185000},
-        {"fecha": "2026-03-26", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -372500},
-        {"fecha": "2026-05-05", "tipo": "PAGO", "producto": "CALZADO NIKE", "descripcion": "CALZADO NIKE", "monto": -187500}
-      ],
-      "username": "hermanodeluz"
-    },
-    "ISAIAS": {
-      "nombre_display": "ISAIAS",
-      "total_deuda": 300000,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 300000}],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "WOMEN", "monto": 120000},
-        {"fecha": "2026-03-06", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "PERFUME", "monto": -120000},
-        {"fecha": "2026-04-15", "tipo": "VENTA", "producto": "TECNOLOGIA", "descripcion": "PS4 GIOVANNI", "monto": 1100000},
-        {"fecha": "2026-04-15", "tipo": "PAGO", "producto": "TECNOLOGIA", "descripcion": "PS4 GIOVANNI", "monto": -500000},
-        {"fecha": "2026-05-03", "tipo": "PAGO", "producto": "GENERAL", "descripcion": "PERFUME", "monto": -300000}
-      ],
-      "username": "isaias"
-    },
-    "TOBIAS INSAURRALDE": {
-      "nombre_display": "TOBIAS INSAURRALDE",
-      "total_deuda": 300000,
-      "num_cuotas": 2,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 150000},
-        {"fecha": "2026-07", "monto": 150000}
-      ],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "TROPICAL VIBE", "monto": 200000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "GLACIER BELLA", "monto": 145000},
-        {"fecha": "2026-03-05", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "PERFUME", "monto": -172500},
-        {"fecha": "2026-04-01", "tipo": "PAGO", "producto": "—", "descripcion": "PAGO", "monto": -172500},
-        {"fecha": "2026-04-08", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CROCS AZUL", "monto": 450000},
-        {"fecha": "2026-05-02", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CROCS 1/3", "monto": -150000}
-      ],
-      "username": "tobiasinsaurralde"
-    },
-    "COMPAÑERA DE PAZ": {
-      "nombre_display": "compañera de paz",
-      "total_deuda": 274500,
-      "num_cuotas": 2,
-      "cuotas": [
-        {"fecha": "2026-06", "monto": 137250},
-        {"fecha": "2026-07", "monto": 137250}
-      ],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 550000},
-        {"fecha": "2026-02-27", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "COUR VISION NIKE", "monto": -137500},
-        {"fecha": "2026-04-06", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "NIKE", "monto": -138000}
-      ],
-      "username": "compañeradepaz"
-    },
-    "FLOR": {
-      "nombre_display": "FLOR",
-      "total_deuda": 157500,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 157500}],
-      "movimientos": [
-        {"fecha": "2026-02-18", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "COUR VISION NIKE", "monto": -270000},
-        {"fecha": "2026-02-25", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "COUR VISION NIKE", "monto": 540000},
-        {"fecha": "2026-03-26", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -270000},
-        {"fecha": "2026-04-08", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "SKECHERS", "monto": 470000},
-        {"fecha": "2026-04-09", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "SKECHERS", "monto": -156500},
-        {"fecha": "2026-05-11", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO SKECHERS", "monto": -156000}
-      ],
-      "username": "flor"
-    },
-    "PAZ GÓMEZ": {
-      "nombre_display": "Paz Gómez",
-      "total_deuda": 137500,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 137500}],
-      "movimientos": [
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 550000},
-        {"fecha": "2026-02-27", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "COUR VISION NIKE", "monto": -137500},
-        {"fecha": "2026-04-06", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "NIKE", "monto": -138000},
-        {"fecha": "2026-05-11", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -137000}
-      ],
-      "username": "pazgómez"
-    },
-    "VERONICA GIL": {
-      "nombre_display": "Veronica Gil",
-      "total_deuda": 130000,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 130000}],
-      "movimientos": [
-        {"fecha": "2026-03-20", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "DOS PAGOS", "monto": 130000},
-        {"fecha": "2026-03-20", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "DOS PAGOS", "monto": -65000},
-        {"fecha": "2026-03-27", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "DOS PAGOS", "monto": -65000},
-        {"fecha": "2026-05-12", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "PERFUME AL SABBA", "monto": 130000}
-      ],
-      "username": "veronicagil"
-    },
-    "MAMA DE ISAIAS": {
-      "nombre_display": "MAMA DE ISAIAS",
-      "total_deuda": 90000,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 90000}],
-      "movimientos": [
-        {"fecha": "2026-04-16", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "PERFUME LILA", "monto": 180000},
-        {"fecha": "2026-04-18", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "PERFUME", "monto": -90000}
-      ],
-      "username": "mamadeisaias"
-    },
-    "ÑA VIDALIA": {
-      "nombre_display": "ÑA VIDALIA",
-      "total_deuda": 90000,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 90000}],
-      "movimientos": [
-        {"fecha": "2026-02-09", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": -100000},
-        {"fecha": "2026-02-01", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 250000},
-        {"fecha": "2026-03-07", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CONVERSE", "monto": 490000},
-        {"fecha": "2026-03-07", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -250000},
-        {"fecha": "2026-03-23", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -200000},
-        {"fecha": "2026-03-26", "tipo": "VENTA", "producto": "CALZADO", "descripcion": "CALZADO NIKE", "monto": 490000},
-        {"fecha": "2026-03-27", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -90000},
-        {"fecha": "2026-03-27", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "CALZADO", "monto": -100000},
-        {"fecha": "2026-04-06", "tipo": "PAGO", "producto": "CALZADO", "descripcion": "NIKE", "monto": -200000},
-        {"fecha": "2026-05-05", "tipo": "PAGO", "producto": "CALZADO NIKE", "descripcion": "CALZADO NIKE", "monto": -200000}
-      ],
-      "username": "ñavidalia"
-    },
-    "EDGAR OLMEDO": {
-      "nombre_display": "EDGAR OLMEDO",
-      "total_deuda": 60000,
-      "num_cuotas": 1,
-      "cuotas": [{"fecha": "2026-06", "monto": 60000}],
-      "movimientos": [
-        {"fecha": "2026-02-14", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "YARA ROSA", "monto": 180000},
-        {"fecha": "2026-03-05", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "PERFUME", "monto": -100000},
-        {"fecha": "2026-03-13", "tipo": "VENTA", "producto": "PERFUME", "descripcion": "ASAD EN DOS PAGOS", "monto": 180000},
-        {"fecha": "2026-04-01", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "ASAD EN DOS PAGOS", "monto": -100000},
-        {"fecha": "2026-05-04", "tipo": "PAGO", "producto": "PERFUME", "descripcion": "PAGO", "monto": -100000}
-      ],
-      "username": "edgarolmedo"
-    }
-  },
-  "logins": {
-    "fabiolaferreira": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "FABIOLA FERREIRA"},
-    "luzsanabria": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "LUZ SANABRIA"},
-    "fernandoferreira": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "FERNANDO FERREIRA"},
-    "franciscocardozo": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "FRANCISCO CARDOZO"},
-    "luzsalinas": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "LUZ SALINAS"},
-    "josebritez": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "JOSE BRITEZ"},
-    "juanflores": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "JUAN FLORES"},
-    "elias": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "ELIAS"},
-    "ronaldobenitezlumi": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "RONALDO BENITEZ (LUMI)"},
-    "hermanodeluz": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "HERMANO DE LUZ"},
-    "isaias": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "ISAIAS"},
-    "tobiasinsaurralde": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "TOBIAS INSAURRALDE"},
-    "compañeradepaz": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "COMPAÑERA DE PAZ"},
-    "flor": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "FLOR"},
-    "pazgómez": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "PAZ GÓMEZ"},
-    "veronicagil": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "VERONICA GIL"},
-    "mamadeisaias": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "MAMA DE ISAIAS"},
-    "ñavidalia": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "ÑA VIDALIA"},
-    "edgarolmedo": {"pw_hash": "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", "client_key": "EDGAR OLMEDO"}
-  }
+// ══════════════════════════════════════════════════════════════════
+// CONFIGURACIÓN — URLs de tu Google Sheet publicado como CSV
+// Para agregar la pestaña CUOTERO: Archivo → Publicar en la web
+// → elegí la pestaña "CUOTERO" → CSV → copiá el link y pegalo abajo
+// ══════════════════════════════════════════════════════════════════
+const SHEET_BASE_URL    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4sJRpZ7wf2dHKkkGpYkhAt1F0ysyRzvHwkNdw05r1APa7nO8ZFDSRmJ7SoQ64wSk8idaVYt0iu5-/pub?output=csv";
+const SHEET_CUOTERO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4sJRpZ7wf2dHKkkGpYkhAt1F0ysyRzvHwkNdw05r1APa7nO8ZFDSRmJ7SoQ64wSk8idaVYt0iu5-/pub?gid=900301684&single=true&output=csv"; // Pegá acá la URL CSV de la pestaña CUOTERO cuando la tengas
+
+// ── Logins ─────────────────────────────────────────────────────────────────
+// client_key = EXACTAMENTE como aparece en la columna NOMBRE del Sheet
+// Si agregás un cliente nuevo: agregá una línea acá con su usuario y contraseña
+const LOGINS = {
+  "fabiolaferreira":    { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Fabiola Ferreira" },
+  "luzsanabria":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "LUZ SANABRIA" },
+  "fernandoferreira":   { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "FERNANDO FERREIRA" },
+  "franciscocardozo":   { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Francisco Cardozo" },
+  "luzsalinas":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "LUZ SALINAS" },
+  "josebritez":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "JOSE BRITEZ" },
+  "juanflores":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "JUAN FLORES" },
+  "elias":              { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ELIAS" },
+  "ronaldobenitezlumi": { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "RONALDO BENITEZ (LUMI)" },
+  "hermanodeluz":       { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "HERMANO DE LUZ" },
+  "isaias":             { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ISAIAS" },
+  "tobiasinsaurralde":  { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "TOBIAS INSAURRALDE" },
+  "compañeradepaz":     { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "compañera de paz" },
+  "flor":               { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "FLOR" },
+  "pazgomez":           { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Paz Gómez" },
+  "veronicagil":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Veronica Gil" },
+  "mamadeisaias":       { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "MAMA DE ISAIAS" },
+  "navidalia":          { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ÑA VIDALIA" },
+  "edgarolmedo":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "EDGAR OLMEDO" }
 };
 
-// ── Utilities ────────────────────────────────────────────
-async function sha256(str) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+// ══════════════════════════════════════════════════════════════════
+// PARSER CSV — maneja celdas con comas dentro de comillas
+// ══════════════════════════════════════════════════════════════════
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split(/\r?\n/);
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
+    }
+    cells.push(cur.trim());
+    rows.push(cells);
+  }
+  return rows;
 }
 
+// ══════════════════════════════════════════════════════════════════
+// FETCH SHEET con caché de 5 minutos para no saturar
+// ══════════════════════════════════════════════════════════════════
+const _cache = {};
+async function fetchCSV(url) {
+  const now = Date.now();
+  if (_cache[url] && now - _cache[url].ts < 5 * 60 * 1000) return _cache[url].data;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("No se pudo leer el Sheet (" + res.status + ")");
+  const text = await res.text();
+  const data = parseCSV(text);
+  _cache[url] = { ts: now, data };
+  return data;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LEER DATOS DEL CLIENTE desde BASE GENERAL
+// Columnas: FECHA(0) NOMBRE(1) PERSONA(2) TIPO DE MOVIMIENTO(3)
+//           PRODUCTO(4) OBSERVACION(5) EMPRESAS(6) MOVIMIENTOS(7)
+//           PRECIO REAL(8) PORCENTAJE(9) MARGEN(10) GANANCIAS(11)
+// ══════════════════════════════════════════════════════════════════
+async function fetchClientData(clientKey) {
+  const rows = await fetchCSV(SHEET_BASE_URL);
+  const headers = rows[0];
+
+  // Índices de columnas (detectados automáticamente por nombre)
+  const idx = {};
+  headers.forEach((h, i) => { idx[h.toUpperCase().trim()] = i; });
+  const iNombre = idx['NOMBRE'] ?? 1;
+  const iFecha  = idx['FECHA']  ?? 0;
+  const iTipo   = idx['TIPO DE MOVIMIENTO'] ?? 3;
+  const iProd   = idx['PRODUCTO'] ?? 4;
+  const iObs    = idx['OBSERVACION'] ?? idx['OBSERVACIÓN'] ?? 5;
+  const iMov    = idx['MOVIMIENTOS'] ?? 7;
+
+  const movimientos = [];
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || row.length < 4) continue;
+    const nombre = (row[iNombre] || '').trim();
+    if (nombre.toUpperCase() !== clientKey.toUpperCase()) continue;
+
+    const tipo  = (row[iTipo] || '').trim().toUpperCase();
+    const monto = parseMontoPY(row[iMov] || '0');
+    const fechaRaw = (row[iFecha] || '').trim();
+
+    movimientos.push({
+      fecha: parseFecha(fechaRaw),
+      tipo,
+      producto:    (row[iProd] || '').trim() || '—',
+      descripcion: (row[iObs]  || '').trim() || '—',
+      monto
+    });
+  }
+
+  return movimientos;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LEER CUOTAS desde pestaña CUOTERO (si está configurada)
+// Columnas: NOMBRE | SUM de MO... | CUOTA | junio 2026 | julio 2026 | ...
+// ══════════════════════════════════════════════════════════════════
+async function fetchCuoteroData(clientKey) {
+  if (!SHEET_CUOTERO_URL) return null; // No configurada aún
+  try {
+    const rows = await fetchCSV(SHEET_CUOTERO_URL);
+    if (rows.length < 2) return null;
+    const headers = rows[0];
+
+    // Buscar la fila del cliente
+    for (let r = 1; r < rows.length; r++) {
+      const row = rows[r];
+      const nombre = (row[0] || '').trim();
+      if (nombre.toUpperCase() !== clientKey.toUpperCase()) continue;
+
+      const totalDeuda = parseNumero(row[1]);
+      const numCuotas  = parseInt(row[2]) || 0;
+
+      // Columnas de meses: desde índice 3 en adelante
+      const cuotas = [];
+      for (let c = 3; c < headers.length; c++) {
+        const montoMes = parseNumero(row[c]);
+        if (montoMes && montoMes > 0) {
+          cuotas.push({ fecha: normalizarMes(headers[c]), monto: montoMes });
+        }
+      }
+      return { totalDeuda, numCuotas, cuotas };
+    }
+    return null;
+  } catch(e) {
+    console.warn("No se pudo leer CUOTERO:", e);
+    return null;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HELPERS de fechas y números
+// ══════════════════════════════════════════════════════════════════
+function parseMontoPY(str) {
+  if (!str) return 0;
+  let s = str.toString().trim();
+  if (!s || s === '-' || s === '0') return 0;
+
+  const isNeg = s.startsWith('-');
+  s = s.replace(/^-/, '');
+
+  // Google Sheets puede exportar de varias formas:
+  // "405.000" → 405000 (punto = miles, formato PY)
+  // "405,000" → 405000 (coma = miles, formato en-US)
+  // "405000"  → 405000 (sin separador)
+  // "405.5"   → 405.5  (decimal real, poco probable en montos PY)
+
+  // Detectar si el punto es separador de miles o decimal
+  const puntos = (s.match(/\./g) || []).length;
+  const comas  = (s.match(/,/g)  || []).length;
+
+  let num;
+  if (puntos > 1) {
+    // Múltiples puntos → miles: "1.405.000" → 1405000
+    s = s.replace(/\./g, '');
+    num = parseFloat(s);
+  } else if (puntos === 1 && comas === 0) {
+    // Un solo punto: ¿miles o decimal?
+    const partes = s.split('.');
+    // Si la parte decimal tiene 3 dígitos → es separador de miles
+    if (partes[1] && partes[1].length === 3) {
+      s = s.replace('.', '');
+      num = parseFloat(s);
+    } else {
+      num = parseFloat(s);
+    }
+  } else if (comas === 1 && puntos === 0) {
+    // Coma decimal (es-PY): "405,5" → 405.5
+    num = parseFloat(s.replace(',', '.'));
+  } else if (comas >= 1) {
+    // Coma como miles: "405,000" → 405000
+    s = s.replace(/,/g, '');
+    num = parseFloat(s);
+  } else {
+    num = parseFloat(s.replace(/[^\d.]/g, '')) || 0;
+  }
+
+  return isNeg ? -(num || 0) : (num || 0);
+}
+
+function parseNumero(str) {
+  return parseMontoPY(str);
+}
+
+function parseFecha(str) {
+  if (!str) return '2026-01-01';
+  // DD/MM/YYYY
+  const m1 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m1) return `${m1[3]}-${m1[2].padStart(2,'0')}-${m1[1].padStart(2,'0')}`;
+  // YYYY-MM-DD
+  const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m2) return str;
+  return '2026-01-01';
+}
+
+function normalizarMes(header) {
+  // "junio 2026" → "2026-06"
+  const meses = {enero:'01',febrero:'02',marzo:'03',abril:'04',mayo:'05',junio:'06',
+                 julio:'07',agosto:'08',septiembre:'09',octubre:'10',noviembre:'11',diciembre:'12'};
+  const parts = header.toLowerCase().trim().split(/\s+/);
+  const mes = meses[parts[0]];
+  const anio = parts[1];
+  if (mes && anio) return `${anio}-${mes}`;
+  return header;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UTILIDADES de formato
+// ══════════════════════════════════════════════════════════════════
 function fmt(n) {
   return Math.abs(n).toLocaleString('es-PY') + ' Gs.';
 }
-
 function fmtFecha(str) {
   const [y,m,d] = str.split('-');
   const meses = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   return `${d || '01'} ${meses[parseInt(m)]} ${y}`;
 }
-
 function fmtMes(str) {
   const [y,m] = str.split('-');
   const meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   return `${meses[parseInt(m)]} ${y}`;
 }
 
-// ── Particles ─────────────────────────────────────────────
+// ── Particles ─────────────────────────────────────────────────────
 (function(){
   const c = document.getElementById("particles");
   for (let i = 0; i < 24; i++) {
@@ -1086,30 +957,36 @@ function fmtMes(str) {
   }
 })();
 
-// Set today date
 document.getElementById('today-date').textContent = new Date().toLocaleDateString('es-PY', {day:'2-digit',month:'short',year:'numeric'});
 
-// ── Toggle password ────────────────────────────────────────
+// ── Toggle password ────────────────────────────────────────────────
 document.getElementById("toggle-pw").addEventListener("click", function() {
   const inp = document.getElementById("inp-pass");
   inp.type = inp.type === "password" ? "text" : "password";
   this.textContent = inp.type === "password" ? "👁️" : "🙈";
 });
 
-// ── Enter key ──────────────────────────────────────────────
 ["inp-user","inp-pass"].forEach(id =>
   document.getElementById(id).addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); })
 );
 
-// ── Login ──────────────────────────────────────────────────
+// ── SHA-256 ────────────────────────────────────────────────────────
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════════════
 let attempts = 0, locked = false;
 
 async function doLogin() {
   if (locked) return;
   const userRaw = document.getElementById("inp-user").value.trim();
-  const pass = document.getElementById("inp-pass").value;
-  const btn = document.getElementById("btn-login");
-  const err = document.getElementById("error-box");
+  const pass    = document.getElementById("inp-pass").value;
+  const btn     = document.getElementById("btn-login");
+  const err     = document.getElementById("error-box");
 
   if (!userRaw || !pass) {
     document.getElementById("error-msg").textContent = "Completá usuario y contraseña.";
@@ -1118,27 +995,23 @@ async function doLogin() {
   }
 
   btn.disabled = true;
-  document.getElementById("btn-icon").style.display = "none";
-  document.getElementById("btn-label").style.display = "none";
+  document.getElementById("btn-icon").style.display   = "none";
+  document.getElementById("btn-label").style.display  = "none";
   document.getElementById("btn-spinner").style.display = "block";
   err.classList.remove("show");
 
-  await new Promise(r => setTimeout(r, 600 + Math.random()*300));
-
-  // Normalize username: lowercase, no spaces
   const user = userRaw.toLowerCase().replace(/\s+/g, '');
   const hash = await sha256(pass);
-
-  const loginEntry = DB.logins[user];
+  const loginEntry = LOGINS[user];
 
   if (loginEntry && hash === loginEntry.pw_hash) {
     attempts = 0;
-    showDashboard(loginEntry.client_key);
+    showDashboard(loginEntry.client_key, userRaw);
   } else {
     attempts++;
     btn.disabled = false;
-    document.getElementById("btn-icon").style.display = "";
-    document.getElementById("btn-label").style.display = "";
+    document.getElementById("btn-icon").style.display   = "";
+    document.getElementById("btn-label").style.display  = "";
     document.getElementById("btn-spinner").style.display = "none";
 
     let msg = "Usuario o contraseña incorrectos.";
@@ -1150,100 +1023,127 @@ async function doLogin() {
     }
     document.getElementById("error-msg").textContent = msg;
     err.classList.remove("show"); void err.offsetWidth; err.classList.add("show");
-
     ["inp-user","inp-pass"].forEach(id => {
       const el = document.getElementById(id);
       el.style.borderColor = "rgba(248,113,113,0.6)";
-      el.style.background = "rgba(248,113,113,0.05)";
+      el.style.background  = "rgba(248,113,113,0.05)";
       setTimeout(() => { el.style.borderColor = ""; el.style.background = ""; }, 2000);
     });
   }
 }
 
-// ── Show Dashboard ─────────────────────────────────────────
-function showDashboard(clientKey) {
+// ══════════════════════════════════════════════════════════════════
+// MOSTRAR DASHBOARD — carga datos del Sheet al vuelo
+// ══════════════════════════════════════════════════════════════════
+function showDashboard(clientKey, displayName) {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("success-overlay").classList.add("show");
 
-  setTimeout(() => {
-    loadDashboard(clientKey);
+  setTimeout(async () => {
+    await loadDashboard(clientKey, displayName);
     document.getElementById("success-overlay").classList.remove("show");
     document.getElementById("dashboard").classList.add("visible");
-  }, 1600);
+  }, 1400);
 }
 
-function loadDashboard(clientKey) {
-  const data = DB.clients[clientKey];
-  if (!data) return;
+async function loadDashboard(clientKey, displayName) {
+  // Nombre visible
+  const nombre = displayName || clientKey;
+  document.getElementById("nav-client-name").textContent = nombre;
+  document.getElementById("welcome-sub").textContent = `Estado de cuenta — ${nombre}`;
 
-  // Nav & welcome
-  document.getElementById("nav-client-name").textContent = data.nombre_display;
-  document.getElementById("welcome-sub").textContent = `Estado de cuenta — ${data.nombre_display}`;
+  // Mostrar skeleton mientras carga
+  document.getElementById("stat-total").textContent  = "…";
+  document.getElementById("stat-cuotas").textContent = "…";
+  document.getElementById("stat-movs").textContent   = "…";
+  document.getElementById("tx-tbody").innerHTML =
+    '<tr><td colspan="5"><div class="empty-state"><div class="icon">⏳</div><p>Cargando datos desde el Sheet…</p></div></td></tr>';
 
-  // Stats
-  document.getElementById("stat-total").textContent = data.total_deuda.toLocaleString('es-PY');
-  document.getElementById("stat-cuotas").textContent = data.cuotas.length;
-  document.getElementById("stat-movs").textContent = data.movimientos.length;
+  try {
+    // Cargar movimientos y cuotas en paralelo
+    const [movimientos, cuoteroData] = await Promise.all([
+      fetchClientData(clientKey),
+      fetchCuoteroData(clientKey)
+    ]);
 
-  // Cuotas
-  const now = new Date();
-  const nowKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    // ── Stats ──
+    const totalDeuda = cuoteroData
+      ? cuoteroData.totalDeuda
+      : movimientos.reduce((s, m) => s + m.monto, 0);
 
-  document.getElementById("cuotas-count-badge").textContent = `${data.cuotas.length} cuota${data.cuotas.length !== 1 ? 's' : ''}`;
+    const cuotas = cuoteroData ? cuoteroData.cuotas : [];
+    const numCuotas = cuotas.length;
 
-  if (data.cuotas.length > 0) {
-    // Alert for next cuota
-    const proxima = data.cuotas[0];
-    document.getElementById("cuota-alert").style.display = "flex";
-    document.getElementById("cuota-alert-text").textContent = `${fmtMes(proxima.fecha)} — ${fmt(proxima.monto)}`;
+    document.getElementById("stat-total").textContent  = totalDeuda.toLocaleString('es-PY');
+    document.getElementById("stat-cuotas").textContent = numCuotas;
+    document.getElementById("stat-movs").textContent   = movimientos.length;
 
-    // Build cuota cards
-    const grid = document.getElementById("cuotas-grid");
-    grid.innerHTML = '';
-    data.cuotas.forEach((c, i) => {
-      const isProx = i === 0;
-      const div = document.createElement('div');
-      div.className = 'cuota-card' + (isProx ? ' proxima' : '');
-      div.innerHTML = `
-        <div class="cuota-num">Cuota ${i+1} de ${data.cuotas.length}</div>
-        <div class="cuota-fecha">${fmtMes(c.fecha)}</div>
-        <div class="cuota-monto ${isProx ? 'gold' : ''}">${fmt(c.monto)}</div>
-        ${isProx ? '<div class="proxima-label">⚡ Próximo vencimiento</div>' : ''}
-      `;
-      grid.appendChild(div);
-    });
-  }
+    // ── Cuotas ──
+    document.getElementById("cuotas-count-badge").textContent =
+      `${numCuotas} cuota${numCuotas !== 1 ? 's' : ''}`;
 
-  // Transactions
-  document.getElementById("movs-count-badge").textContent = `${data.movimientos.length} registros`;
+    if (cuotas.length > 0) {
+      const proxima = cuotas[0];
+      document.getElementById("cuota-alert").style.display = "flex";
+      document.getElementById("cuota-alert-text").textContent =
+        `${fmtMes(proxima.fecha)} — ${fmt(proxima.monto)}`;
 
-  const tbody = document.getElementById("tx-tbody");
-  if (data.movimientos.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><p>Sin movimientos registrados</p></div></td></tr>';
-  } else {
-    // Sort by date descending
-    const sorted = [...data.movimientos].sort((a,b) => b.fecha.localeCompare(a.fecha));
-    tbody.innerHTML = sorted.map(m => {
-      const isVenta = m.tipo === 'VENTA';
-      const signo = isVenta ? '+' : '-';
-      return `
-        <tr>
-          <td class="tx-date">${fmtFecha(m.fecha)}</td>
-          <td><span class="tipo-badge ${isVenta ? 'tipo-venta' : 'tipo-pago'}">${isVenta ? '🛒 Compra' : '✅ Pago'}</span></td>
-          <td style="color:var(--text);font-size:12px;">${m.producto}</td>
-          <td>
-            <div style="font-size:13px;">${m.descripcion}</div>
-          </td>
-          <td style="text-align:right">
-            <div class="tx-monto ${isVenta ? 'pos' : 'neg'}">${signo} ${fmt(m.monto)}</div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+      const grid = document.getElementById("cuotas-grid");
+      grid.innerHTML = '';
+      cuotas.forEach((c, i) => {
+        const isProx = i === 0;
+        const div = document.createElement('div');
+        div.className = 'cuota-card' + (isProx ? ' proxima' : '');
+        div.innerHTML = `
+          <div class="cuota-num">Cuota ${i+1} de ${cuotas.length}</div>
+          <div class="cuota-fecha">${fmtMes(c.fecha)}</div>
+          <div class="cuota-monto ${isProx ? 'gold' : ''}">${fmt(c.monto)}</div>
+          ${isProx ? '<div class="proxima-label">⚡ Próximo vencimiento</div>' : ''}
+        `;
+        grid.appendChild(div);
+      });
+    } else {
+      // Si no hay URL de CUOTERO aún, mostrar aviso
+      document.getElementById("cuotas-grid").innerHTML =
+        '<div class="empty-state"><div class="icon">📅</div><p>Configurá la URL del CUOTERO para ver las cuotas</p></div>';
+    }
+
+    // ── Movimientos ──
+    document.getElementById("movs-count-badge").textContent =
+      `${movimientos.length} registros`;
+
+    const tbody = document.getElementById("tx-tbody");
+    if (movimientos.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><p>Sin movimientos registrados</p></div></td></tr>';
+    } else {
+      const sorted = [...movimientos].sort((a,b) => b.fecha.localeCompare(a.fecha));
+      tbody.innerHTML = sorted.map(m => {
+        const isVenta = m.tipo === 'VENTA';
+        const signo   = isVenta ? '+' : '-';
+        return `
+          <tr>
+            <td class="tx-date">${fmtFecha(m.fecha)}</td>
+            <td><span class="tipo-badge ${isVenta ? 'tipo-venta' : 'tipo-pago'}">${isVenta ? '🛒 Compra' : '✅ Pago'}</span></td>
+            <td style="color:var(--text);font-size:12px;">${m.producto}</td>
+            <td><div style="font-size:13px;">${m.descripcion}</div></td>
+            <td style="text-align:right">
+              <div class="tx-monto ${isVenta ? 'pos' : 'neg'}">${signo} ${fmt(m.monto)}</div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById("tx-tbody").innerHTML =
+      `<tr><td colspan="5"><div class="empty-state"><div class="icon">⚠️</div><p>Error al cargar datos: ${e.message}</p></div></td></tr>`;
+    document.getElementById("stat-total").textContent  = "—";
+    document.getElementById("stat-cuotas").textContent = "—";
+    document.getElementById("stat-movs").textContent   = "—";
   }
 }
 
-// ── Logout ─────────────────────────────────────────────────
+// ── Logout ─────────────────────────────────────────────────────────
 function doLogout() {
   if (!confirm("¿Cerrar sesión?")) return;
   document.getElementById("dashboard").classList.remove("visible");
@@ -1251,10 +1151,12 @@ function doLogout() {
   document.getElementById("inp-pass").value = "";
   document.getElementById("login-screen").style.display = "";
   document.getElementById("error-box").classList.remove("show");
+  document.getElementById("cuota-alert").style.display = "none";
+  document.getElementById("cuotas-grid").innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Sin cuotas programadas</p></div>';
+  document.getElementById("tx-tbody").innerHTML = '';
   attempts = 0; locked = false;
 }
 </script>
 </body>
 </html>
-
 
