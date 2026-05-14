@@ -420,17 +420,141 @@ body::after{
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.18);}
 
-/* Responsive */
-@media(max-width:600px){
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .login-card{padding:36px 24px 32px;}
-  .welcome-banner{flex-direction:column;text-align:center;}
-  .tx-table th:nth-child(3),.tx-table td:nth-child(3){display:none;}
-  .top-nav{padding:0 16px;}
-  .main-content{padding:24px 16px 60px;}
+/* ══════════════════════════════
+   MOBILE — FIRST
+══════════════════════════════ */
+@media(max-width:700px){
+
+  /* Login */
+  #login-screen{padding:16px;align-items:flex-end;padding-bottom:0;}
+  .login-wrap{max-width:100%;}
+  .login-card{
+    padding:36px 24px 40px;
+    border-radius:28px 28px 0 0;
+    border-bottom:none;
+    box-shadow:0 -20px 80px rgba(0,0,0,0.7),0 0 60px rgba(59,130,246,0.06);
+  }
+  .login-title{font-size:28px;}
+  .login-subtitle{font-size:13px;margin-bottom:28px;}
+  .login-logo-icon{width:46px;height:46px;font-size:20px;}
+  .login-brand{font-size:19px;}
+  .field-input{height:52px;font-size:15px;}
+  .field-icon{height:52px;}
+  .toggle-pw{height:52px;}
+  .btn-login{height:54px;font-size:16px;border-radius:16px;margin-top:14px;}
+
+  /* Nav */
+  .top-nav{
+    padding:0 16px;height:60px;
+    position:sticky;top:0;
+  }
+  .nav-name{font-size:16px;}
+  .nav-client{display:none;}
+  .btn-logout{padding:0 14px;font-size:11px;}
+
+  /* Main */
+  .main-content{padding:20px 14px 80px;}
+
+  /* Welcome banner */
+  .welcome-banner{
+    flex-direction:column;gap:14px;
+    padding:22px 20px;border-radius:20px;
+    margin-bottom:20px;
+  }
+  .welcome-left h1{font-size:22px;}
+  .welcome-left p{font-size:12px;}
+  .welcome-badge{
+    width:100%;display:flex;align-items:center;
+    justify-content:space-between;padding:10px 16px;
+    border-radius:12px;
+  }
+  .welcome-badge-label{font-size:11px;}
+  .welcome-badge-date{font-size:13px;margin-top:0;}
+
+  /* Stats */
+  .stats-row{
+    grid-template-columns:1fr 1fr;
+    gap:10px;margin-bottom:20px;
+  }
+  .stats-row .stat-card:last-child{
+    grid-column:1 / -1;
+  }
+  .stat-card{padding:18px 16px;border-radius:16px;}
+  .stat-icon{font-size:18px;margin-bottom:8px;}
+  .stat-label{font-size:10px;}
+  .stat-value{font-size:22px;}
+  .stat-sub{font-size:11px;}
+
+  /* Section headers */
+  .section-header{margin-top:24px;margin-bottom:14px;}
+  .section-title{font-size:16px;}
+
+  /* Cuotas */
+  .cuotas-grid{
+    grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .cuota-card{padding:16px 14px;border-radius:14px;}
+  .cuota-num{font-size:10px;}
+  .cuota-fecha{font-size:13px;}
+  .cuota-monto{font-size:17px;}
+
+  /* Alert */
+  .alert{padding:13px 15px;border-radius:12px;font-size:12.5px;}
+
+  /* ── Tabla → tarjetas en móvil ── */
+  .tx-table-wrap{background:transparent;border:none;border-radius:0;overflow:visible;}
+  .tx-table thead{display:none;}
+  .tx-table,
+  .tx-table tbody{display:flex;flex-direction:column;gap:10px;width:100%;}
+  .tx-table tr{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto auto auto;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 16px 12px;
+    gap:3px 8px;
+    transition:border-color .2s;
+  }
+  .tx-table tr:hover{border-color:rgba(255,255,255,0.13);}
+  .tx-table td{
+    padding:0;border:none;font-size:13px;
+    background:transparent !important;
+  }
+  /* tipo badge — row1 col1 */
+  .tx-table td:nth-child(2){grid-row:1;grid-column:1;}
+  /* monto — row1 col2, right-aligned */
+  .tx-table td:nth-child(5){
+    grid-row:1;grid-column:2;
+    text-align:right;
+    display:flex;align-items:center;justify-content:flex-end;
+  }
+  /* producto label — row2 col1-2 */
+  .tx-table td:nth-child(3){
+    grid-row:2;grid-column:1/3;
+    font-size:11.5px;color:var(--text2);
+    margin-top:2px;
+  }
+  /* descripcion — row3 col1 */
+  .tx-table td:nth-child(4){
+    grid-row:3;grid-column:1;
+    font-size:13px;color:var(--text);
+  }
+  /* fecha — row3 col2 */
+  .tx-table td:nth-child(1){
+    grid-row:3;grid-column:2;
+    font-size:11px;color:var(--text2);
+    text-align:right;
+    display:flex;align-items:flex-end;justify-content:flex-end;
+  }
 }
-@media(max-width:400px){
+
+@media(max-width:380px){
   .stats-row{grid-template-columns:1fr;}
+  .stats-row .stat-card:last-child{grid-column:auto;}
+  .cuotas-grid{grid-template-columns:1fr;}
+  .login-card{padding:30px 18px 36px;}
 }
 </style>
 </head>
@@ -1132,4 +1256,5 @@ function doLogout() {
 </script>
 </body>
 </html>
+
 
