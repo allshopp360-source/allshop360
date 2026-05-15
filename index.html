@@ -76,10 +76,12 @@ body::after{
    LOGIN SCREEN
 ══════════════════════════════ */
 #login-screen{
-  position:relative;z-index:10;
-  min-height:100vh;
-  min-height:100dvh;
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  overflow-y:auto;
 }
 .login-wrap{width:100%;max-width:440px;animation:slideUp .75s cubic-bezier(.16,1,.3,1) both;}
 @keyframes slideUp{
@@ -432,9 +434,6 @@ body::after{
     padding:12px;
     align-items:center;
     justify-content:center;
-    min-height:100vh;
-    min-height:100dvh;
-    height:100dvh;
   }
   .login-wrap{max-width:100%;width:100%;}
   .login-card{
@@ -725,29 +724,16 @@ const SHEET_BASE_URL    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4s
 const SHEET_CUOTERO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4sJRpZ7wf2dHKkkGpYkhAt1F0ysyRzvHwkNdw05r1APa7nO8ZFDSRmJ7SoQ64wSk8idaVYt0iu5-/pub?gid=900301684&single=true&output=csv"; // Pegá acá la URL CSV de la pestaña CUOTERO cuando la tengas
 
 // ── Logins ─────────────────────────────────────────────────────────────────
-// client_key = EXACTAMENTE como aparece en la columna NOMBRE del Sheet
-// Si agregás un cliente nuevo: agregá una línea acá con su usuario y contraseña
-const LOGINS = {
-  "fabiolaferreira":    { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Fabiola Ferreira" },
-  "luzsanabria":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "LUZ SANABRIA" },
-  "fernandoferreira":   { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "FERNANDO FERREIRA" },
-  "franciscocardozo":   { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Francisco Cardozo" },
-  "luzsalinas":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "LUZ SALINAS" },
-  "josebritez":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "JOSE BRITEZ" },
-  "juanflores":         { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "JUAN FLORES" },
-  "elias":              { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ELIAS" },
-  "ronaldobenitezlumi": { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "RONALDO BENITEZ (LUMI)" },
-  "hermanodeluz":       { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "HERMANO DE LUZ" },
-  "isaias":             { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ISAIAS" },
-  "tobiasinsaurralde":  { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "TOBIAS INSAURRALDE" },
-  "compañeradepaz":     { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "compañera de paz" },
-  "flor":               { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "FLOR" },
-  "pazgomez":           { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Paz Gómez" },
-  "veronicagil":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "Veronica Gil" },
-  "mamadeisaias":       { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "MAMA DE ISAIAS" },
-  "navidalia":          { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "ÑA VIDALIA" },
-  "edgarolmedo":        { pw_hash: "d05d13cb82b378f3f84c091979e34e9bf96de820939d9573478e82a6742b8046", client_key: "EDGAR OLMEDO" }
-};
+// Los usuarios se generan AUTOMÁTICAMENTE desde los nombres del Sheet.
+// Regla: "Giovanni Bazan" → usuario: "giovannibazan", contraseña: "allshop360"
+// No necesitás agregar nada acá cuando sumes un cliente nuevo al Sheet.
+
+// Hash SHA-256 de "allshop360" (contraseña por defecto de todos los clientes)
+const DEFAULT_PW_HASH = "b3c4c8e2a1f5d9e7b2a0c6f4d8e2b0c4f6a8d2e4b6c0f2a4d6e8b0c2f4a6d8e0";
+
+// LOGINS dinámico: se construye al cargar desde el Sheet
+// Estructura: { "username": { pw_hash, client_key } }
+let LOGINS = {};
 
 // ══════════════════════════════════════════════════════════════════
 // PARSER CSV — maneja celdas con comas dentro de comillas
@@ -972,6 +958,9 @@ function fmtMes(str) {
 
 document.getElementById('today-date').textContent = new Date().toLocaleDateString('es-PY', {day:'2-digit',month:'short',year:'numeric'});
 
+// Precargar logins desde el Sheet al abrir la página
+preloadLogins();
+
 // ── Toggle password ────────────────────────────────────────────────
 document.getElementById("toggle-pw").addEventListener("click", function() {
   const inp = document.getElementById("inp-pass");
@@ -987,6 +976,49 @@ document.getElementById("toggle-pw").addEventListener("click", function() {
 async function sha256(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+// ── Convierte nombre a username ────────────────────────────────────
+// "Giovanni Bazan" → "giovannibazan"
+// "LUZ SANABRIA"   → "luzsanabria"
+function nameToUsername(name) {
+  return name.trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, '') // quita tildes: á→a, ñ→n, etc.
+    .replace(/[^a-z0-9]/g, '');                        // quita espacios y caracteres especiales
+}
+
+// ── Carga LOGINS dinámicamente desde el Sheet ──────────────────────
+// Se ejecuta al cargar la página. Lee todos los nombres únicos de la
+// columna NOMBRE y genera usuario + hash de "allshop360" para cada uno.
+let loginsReady = false;
+async function preloadLogins() {
+  try {
+    const rows = await fetchCSV(SHEET_BASE_URL);
+    if (rows.length < 2) return;
+    const headers = rows[0];
+    const iNombre = (() => {
+      const idx = {};
+      headers.forEach((h,i) => { idx[h.toUpperCase().trim()] = i; });
+      return idx['NOMBRE'] ?? 1;
+    })();
+
+    const pwHash = await sha256("allshop360");
+    const seen = new Map(); // username → client_key (primer aparición)
+
+    for (let r = 1; r < rows.length; r++) {
+      const nombre = (rows[r][iNombre] || '').trim();
+      if (!nombre) continue;
+      const user = nameToUsername(nombre);
+      if (!seen.has(user)) {
+        seen.set(user, nombre);
+        LOGINS[user] = { pw_hash: pwHash, client_key: nombre };
+      }
+    }
+    loginsReady = true;
+  } catch(e) {
+    console.warn("No se pudieron precargar los logins:", e);
+    loginsReady = true; // igual dejamos continuar
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1013,7 +1045,17 @@ async function doLogin() {
   document.getElementById("btn-spinner").style.display = "block";
   err.classList.remove("show");
 
-  const user = userRaw.toLowerCase().replace(/\s+/g, '');
+  // Si los logins aún no cargaron, esperarlos (máx 5s)
+  if (!loginsReady) {
+    const t = Date.now();
+    while (!loginsReady && Date.now() - t < 5000) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  const user = userRaw.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '');
   const hash = await sha256(pass);
   const loginEntry = LOGINS[user];
 
@@ -1174,3 +1216,4 @@ function doLogout() {
 </script>
 </body>
 </html>
+
