@@ -255,8 +255,17 @@ body::after{
 }
 .nav-name{font-family:'Fraunces',serif;font-size:18px;font-weight:900;letter-spacing:-.3px;}
 .nav-right{display:flex;align-items:center;gap:16px;}
-.nav-client{font-size:13px;color:var(--text2);}
-.nav-client span{color:var(--blue);font-weight:600;}
+.nav-client{display:flex;align-items:center;gap:10px;}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#3b82f6,#2dd4bf);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:#fff;letter-spacing:.5px;
+  box-shadow:0 2px 10px rgba(59,130,246,0.35);
+}
+.nav-client-info{display:flex;flex-direction:column;line-height:1.2;}
+.nav-client-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;}
+.nav-client-name{font-size:13px;color:var(--text);font-weight:700;}
 .btn-logout{
   height:36px;padding:0 18px;border-radius:10px;
   border:1px solid rgba(255,255,255,0.1);
@@ -749,7 +758,13 @@ body::after{
       <div class="nav-name">ALLSHOP</div>
     </div>
     <div class="nav-right">
-      <div class="nav-client">Hola, <span id="nav-client-name"></span></div>
+      <div class="nav-client">
+        <div class="nav-avatar" id="nav-avatar"></div>
+        <div class="nav-client-info">
+          <div class="nav-client-label">Estado de cuenta</div>
+          <div class="nav-client-name" id="nav-client-name"></div>
+        </div>
+      </div>
       <button class="btn-refresh" id="btn-refresh" onclick="doRefresh()" title="Actualizar datos">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Actualizar
@@ -763,7 +778,11 @@ body::after{
     <div class="welcome-banner">
       <div class="welcome-left">
         <h1>Tu Estado de <span>Cuenta</span></h1>
-        <p id="welcome-sub">Resumen de compras y cuotas pendientes</p>
+        <div id="welcome-client-wrap" style="display:none;margin-top:6px;">
+          <div id="welcome-client-name" style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.1;"></div>
+          <p id="welcome-sub" style="font-size:13px;color:var(--text2);margin-top:4px;"></p>
+        </div>
+        <p id="welcome-sub-default">Resumen de compras y cuotas pendientes</p>
       </div>
       <div class="welcome-badge">
         <div class="welcome-badge-label">Actualizado</div>
@@ -783,9 +802,9 @@ body::after{
       <div class="stat-card" style="--accent:linear-gradient(90deg,#f59e0b,#fb923c);--glow:rgba(245,158,11,0.15);">
         <div class="stat-card-glow"></div>
         <div class="stat-icon">📅</div>
-        <div class="stat-label">Cuotas Pendientes</div>
+        <div class="stat-label">Cuotas Pagadas</div>
         <div class="stat-value" id="stat-cuotas">—</div>
-        <div class="stat-sub">pagos restantes</div>
+        <div class="stat-sub">del total de cuotas</div>
       </div>
       <div class="stat-card" style="--accent:linear-gradient(90deg,#2dd4bf,#34d399);--glow:rgba(52,211,153,0.15);">
         <div class="stat-card-glow"></div>
@@ -802,12 +821,8 @@ body::after{
         <div class="progress-label">📊 Progreso de pago</div>
         <div class="progress-stats">
           <div class="progress-stat">
-            <div class="progress-stat-val green" id="prog-pagado">—</div>
-            <div class="progress-stat-sub">Pagado</div>
-          </div>
-          <div class="progress-stat">
             <div class="progress-stat-val blue" id="prog-deuda">—</div>
-            <div class="progress-stat-sub">Pendiente</div>
+            <div class="progress-stat-sub">Pendiente a cancelar</div>
           </div>
         </div>
       </div>
@@ -955,8 +970,18 @@ async function fetchClientData(clientKey) {
     if (nombre.toUpperCase() !== clientKey.toUpperCase()) continue;
 
     const tipo  = (row[iTipo] || '').trim().toUpperCase();
-    const monto = parseMontoPY(row[iMov] || '0');
+    let monto = parseMontoPY(row[iMov] || '0');
     const fechaRaw = (row[iFecha] || '').trim();
+
+    // Los PAGOS SIEMPRE deben ser negativos para que el saldo se calcule correctamente.
+    // Si en el Sheet el pago está cargado como número positivo, lo forzamos a negativo.
+    if (tipo !== 'VENTA' && monto > 0) {
+      monto = -monto;
+    }
+    // Las VENTAS siempre deben ser positivas.
+    if (tipo === 'VENTA' && monto < 0) {
+      monto = -monto;
+    }
 
     movimientos.push({
       fecha: parseFecha(fechaRaw),
@@ -989,16 +1014,17 @@ async function fetchCuoteroData(clientKey) {
 
       const totalDeuda = parseNumero(row[1]);
       const numCuotas  = parseInt(row[2]) || 0;
+      const montoCuota = parseNumero(row[3]); // col D: monto fijo por cuota (informativo)
 
-      // Columnas de meses: desde índice 3 en adelante
+      // Columnas de meses: desde índice 4 en adelante (col E en adelante)
       const cuotas = [];
-      for (let c = 3; c < headers.length; c++) {
+      for (let c = 4; c < headers.length; c++) {
         const montoMes = parseNumero(row[c]);
         if (montoMes && montoMes > 0) {
           cuotas.push({ fecha: normalizarMes(headers[c]), monto: montoMes });
         }
       }
-      return { totalDeuda, numCuotas, cuotas };
+      return { totalDeuda, numCuotas, montoCuota, cuotas };
     }
     return null;
   } catch(e) {
@@ -1136,6 +1162,17 @@ async function sha256(str) {
 // ── Convierte nombre a username ────────────────────────────────────
 // "Giovanni Bazan" → "giovannibazan"
 // "LUZ SANABRIA"   → "luzsanabria"
+// ── Formatea nombre en Title Case (Luz Sanabria) ─────────────────
+function toTitleCase(str) {
+  if (!str) return '';
+  // Palabras que se dejan en minúscula (artículos/preposiciones en español)
+  const minor = new Set(['de','del','la','las','los','y','e','o','a','en','el']);
+  return str.toLowerCase().split(/\s+/).map((w, i) => {
+    if (i !== 0 && minor.has(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+}
+
 function nameToUsername(name) {
   return name.trim().toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, '') // quita tildes: á→a, ñ→n, etc.
@@ -1280,24 +1317,39 @@ function goPage(p) {
 }
 
 // ── Progress bar ──────────────────────────────────────────────────
-function renderProgressBar(movimientos) {
-  const totalCompras = movimientos.filter(m=>m.tipo==='VENTA').reduce((s,m)=>s+m.monto, 0);
-  const totalPagos   = movimientos.filter(m=>m.tipo!=='VENTA').reduce((s,m)=>s+Math.abs(m.monto), 0);
+// Base: totalDeuda del CUOTERO (monto original de la deuda negociada).
+// Pagado: totalDeuda del CUOTERO - saldo actual del BASE.
+// Robusto: no depende de fechas ni de columnas borradas del cuotero.
+// Sin CUOTERO la barra se oculta.
+function renderProgressBar(movimientos, cuoteroData) {
+  const wrap = document.getElementById('progress-wrap');
 
-  if (totalCompras <= 0) {
-    document.getElementById('progress-wrap').style.display = 'none';
+  // Calcular siempre desde los movimientos del BASE (fuente de verdad):
+  const totalVentas = movimientos.filter(m => m.tipo === 'VENTA').reduce((s, m) => s + Math.abs(m.monto), 0);
+  const totalPagado = movimientos.filter(m => m.tipo !== 'VENTA').reduce((s, m) => s + Math.abs(m.monto), 0);
+  const saldoActual = Math.max(0, totalVentas - totalPagado);
+
+  // Si no hay ventas no hay nada que mostrar
+  if (totalVentas <= 0) {
+    wrap.style.display = 'none';
     return;
   }
 
-  const pct = Math.min(100, Math.round((totalPagos / totalCompras) * 100));
-  const deuda = Math.max(0, totalCompras - totalPagos);
+  // Usar el mayor entre las ventas del BASE y el totalDeuda del CUOTERO como referencia
+  const deudaCuotero = (cuoteroData && cuoteroData.totalDeuda > 0) ? cuoteroData.totalDeuda : 0;
+  const totalDeudaRef = Math.max(totalVentas, deudaCuotero);
 
-  document.getElementById('progress-wrap').style.display = 'block';
-  document.getElementById('prog-pagado').textContent = fmt(totalPagos);
-  document.getElementById('prog-deuda').textContent  = fmt(deuda);
+  const pagadoReal = Math.min(totalPagado, totalDeudaRef);
+  const pct = Math.min(100, Math.round((pagadoReal / totalDeudaRef) * 100));
+
+  console.log('[AllShop] Progress:', { totalVentas, totalPagado, saldoActual, totalDeudaRef, pct });
+
+  wrap.style.display = 'block';
+  document.getElementById('prog-deuda').textContent  = fmt(saldoActual);
   document.getElementById('progress-pct').textContent = `${pct}% completado`;
 
-  // Animate after paint
+  // Reset antes de animar
+  document.getElementById('progress-bar').style.width = '0%';
   requestAnimationFrame(() => {
     setTimeout(() => {
       document.getElementById('progress-bar').style.width = pct + '%';
@@ -1348,15 +1400,14 @@ async function doLogin() {
     }
   }
 
-  const user = userRaw.toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '');
+  // Usar la MISMA normalización que nameToUsername para que coincida con LOGINS
+  const user = nameToUsername(userRaw);
   const hash = await sha256(pass);
   const loginEntry = LOGINS[user];
 
   if (loginEntry && hash === loginEntry.pw_hash) {
     attempts = 0;
-    showDashboard(loginEntry.client_key, userRaw);
+    showDashboard(loginEntry.client_key, loginEntry.client_key);
   } else {
     attempts++;
     btn.disabled = false;
@@ -1365,6 +1416,9 @@ async function doLogin() {
     document.getElementById("btn-spinner").style.display = "none";
 
     let msg = "Usuario o contraseña incorrectos.";
+    // Debug: mostrá en consola los usuarios disponibles para diagnosticar
+    console.warn(`[AllShop] Login fallido. Usuario ingresado: "${user}"`);
+    console.warn(`[AllShop] Usuarios disponibles en LOGINS:`, Object.keys(LOGINS));
     if (attempts >= 3) {
       locked = true;
       msg = "Demasiados intentos. Esperá 30 segundos.";
@@ -1400,9 +1454,20 @@ function showDashboard(clientKey, displayName) {
 
 async function loadDashboard(clientKey, displayName) {
   // Nombre visible
-  const nombre = displayName || clientKey;
-  document.getElementById("nav-client-name").textContent = nombre;
-  document.getElementById("welcome-sub").textContent = `Estado de cuenta — ${nombre}`;
+  const nombre = toTitleCase(displayName || clientKey);
+  // Iniciales para el avatar (máx 2)
+  const iniciales = nombre.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById("nav-avatar").textContent       = iniciales;
+  document.getElementById("nav-client-name").textContent  = nombre;
+  // Welcome banner
+  const wrapEl = document.getElementById("welcome-client-wrap");
+  if (wrapEl) {
+    wrapEl.style.display = 'block';
+    document.getElementById("welcome-client-name").textContent = nombre;
+    document.getElementById("welcome-sub").textContent = "Consultá tus compras, pagos y cuotas pendientes";
+    const def = document.getElementById("welcome-sub-default");
+    if (def) def.style.display = 'none';
+  }
 
   // Mostrar skeleton mientras carga
   document.getElementById("stat-total").textContent  = "…";
@@ -1429,15 +1494,24 @@ async function loadDashboard(clientKey, displayName) {
     const numCuotas = cuotas.length;
 
     document.getElementById("stat-total").textContent  = totalDeuda.toLocaleString('es-PY');
-    document.getElementById("stat-cuotas").textContent = numCuotas;
+    const totalCuotasOriginal = cuoteroData ? cuoteroData.numCuotas : numCuotas;
+    const cuotasPagadas       = totalCuotasOriginal - numCuotas;
+    document.getElementById("stat-cuotas").textContent =
+      totalCuotasOriginal > 0
+        ? `${cuotasPagadas} / ${totalCuotasOriginal}`
+        : cuotasPagadas;
     document.getElementById("stat-movs").textContent   = movimientos.length;
 
     // ── Progress bar ──
-    renderProgressBar(movimientos);
+    renderProgressBar(movimientos, cuoteroData);
 
     // ── Cuotas ──
+    const _totalOrig = cuoteroData ? cuoteroData.numCuotas : numCuotas;
+    const _pagadas   = Math.max(0, _totalOrig - numCuotas);
     document.getElementById("cuotas-count-badge").textContent =
-      `${numCuotas} cuota${numCuotas !== 1 ? 's' : ''}`;
+      _totalOrig > 0
+        ? `${_pagadas} pagada${_pagadas!==1?'s':''} · ${numCuotas} pendiente${numCuotas!==1?'s':''}`
+        : `${numCuotas} cuota${numCuotas!==1?'s':''}`;
 
     if (cuotas.length > 0) {
       const proxima = cuotas[0];
@@ -1452,7 +1526,7 @@ async function loadDashboard(clientKey, displayName) {
         const div = document.createElement('div');
         div.className = 'cuota-card' + (isProx ? ' proxima' : '');
         div.innerHTML = `
-          <div class="cuota-num">Cuota ${i+1} de ${cuotas.length}</div>
+          <div class="cuota-num">Cuota ${_pagadas + i + 1} de ${_totalOrig || cuotas.length}</div>
           <div class="cuota-fecha">${fmtMes(c.fecha)}</div>
           <div class="cuota-monto ${isProx ? 'gold' : ''}">${fmt(c.monto)}</div>
           ${isProx ? '<div class="proxima-label">⚡ Próximo vencimiento</div>' : ''}
@@ -1502,6 +1576,12 @@ function doLogout() {
   document.getElementById("pagination").innerHTML = '';
   document.getElementById("progress-wrap").style.display = 'none';
   document.getElementById("progress-bar").style.width = '0%';
+  document.getElementById("nav-avatar").textContent = '';
+  document.getElementById("nav-client-name").textContent = '';
+  const wrapEl = document.getElementById("welcome-client-wrap");
+  if (wrapEl) { wrapEl.style.display='none'; }
+  const defEl = document.getElementById("welcome-sub-default");
+  if (defEl) { defEl.style.display=''; }
   _allMovimientos = []; _currentFilter = 'todos'; _currentPage = 1;
   _currentClientKey = ''; _currentDisplayName = '';
   attempts = 0; locked = false;
