@@ -930,16 +930,12 @@ function parseCSV(text) {
 // ══════════════════════════════════════════════════════════════════
 // FETCH SHEET con caché de 5 minutos para no saturar
 // ══════════════════════════════════════════════════════════════════
-const _cache = {};
 async function fetchCSV(url) {
-  const now = Date.now();
-  if (_cache[url] && now - _cache[url].ts < 5 * 60 * 1000) return _cache[url].data;
-  const res = await fetch(url);
+  // Sin caché: siempre trae datos frescos del Sheet para evitar inconsistencias al actualizar
+  const res = await fetch(url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now());
   if (!res.ok) throw new Error("No se pudo leer el Sheet (" + res.status + ")");
   const text = await res.text();
-  const data = parseCSV(text);
-  _cache[url] = { ts: now, data };
-  return data;
+  return parseCSV(text);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1321,34 +1317,24 @@ function goPage(p) {
 // Pagado: totalDeuda del CUOTERO - saldo actual del BASE.
 // Robusto: no depende de fechas ni de columnas borradas del cuotero.
 // Sin CUOTERO la barra se oculta.
-function renderProgressBar(movimientos, cuoteroData) {
+function renderProgressBar(cuoteroData) {
   const wrap = document.getElementById('progress-wrap');
 
-  // Calcular siempre desde los movimientos del BASE (fuente de verdad):
-  const totalVentas = movimientos.filter(m => m.tipo === 'VENTA').reduce((s, m) => s + Math.abs(m.monto), 0);
-  const totalPagado = movimientos.filter(m => m.tipo !== 'VENTA').reduce((s, m) => s + Math.abs(m.monto), 0);
-  const saldoActual = Math.max(0, totalVentas - totalPagado);
-
-  // Si no hay ventas no hay nada que mostrar
-  if (totalVentas <= 0) {
+  // Todo viene del CUOTERO: totalDeuda es el saldo pendiente real
+  if (!cuoteroData || !cuoteroData.totalDeuda || cuoteroData.totalDeuda <= 0) {
     wrap.style.display = 'none';
     return;
   }
 
-  // Usar el mayor entre las ventas del BASE y el totalDeuda del CUOTERO como referencia
-  const deudaCuotero = (cuoteroData && cuoteroData.totalDeuda > 0) ? cuoteroData.totalDeuda : 0;
-  const totalDeudaRef = Math.max(totalVentas, deudaCuotero);
-
-  const pagadoReal = Math.min(totalPagado, totalDeudaRef);
-  const pct = Math.min(100, Math.round((pagadoReal / totalDeudaRef) * 100));
-
-  console.log('[AllShop] Progress:', { totalVentas, totalPagado, saldoActual, totalDeudaRef, pct });
+  const totalOriginal  = cuoteroData.numCuotas * cuoteroData.montoCuota || cuoteroData.totalDeuda;
+  const saldoPendiente = cuoteroData.totalDeuda;
+  const pagado         = Math.max(0, totalOriginal - saldoPendiente);
+  const pct            = Math.min(100, Math.round((pagado / totalOriginal) * 100));
 
   wrap.style.display = 'block';
-  document.getElementById('prog-deuda').textContent  = fmt(saldoActual);
+  document.getElementById('prog-deuda').textContent   = fmt(saldoPendiente);
   document.getElementById('progress-pct').textContent = `${pct}% completado`;
 
-  // Reset antes de animar
   document.getElementById('progress-bar').style.width = '0%';
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -1364,9 +1350,6 @@ async function doRefresh() {
   btn.disabled = true;
   btn.classList.add('spinning');
 
-  // Clear cache for both URLs so fresh data is fetched
-  delete _cache[SHEET_BASE_URL];
-  delete _cache[SHEET_CUOTERO_URL];
 
   await loadDashboard(_currentClientKey, _currentDisplayName);
   btn.disabled = false;
@@ -1483,31 +1466,28 @@ async function loadDashboard(clientKey, displayName) {
       fetchCuoteroData(clientKey)
     ]);
 
-    // ── Stats ──
-    // La deuda SIEMPRE se calcula desde los movimientos del Sheet base:
-    // ventas son positivas, pagos son negativos → la suma refleja el saldo real en tiempo real.
-    // NO usamos cuoteroData.totalDeuda porque es un valor estático que no se actualiza con los pagos.
-    const totalDeuda = Math.max(0, movimientos.reduce((s, m) => s + m.monto, 0));
+    // ── Stats: todo desde el CUOTERO ──
+    const cuotas         = cuoteroData ? cuoteroData.cuotas : [];
+    const numCuotas      = cuotas.length;                          // cuotas pendientes (las que quedan en el cuotero)
+    const totalCuotasOriginal = cuoteroData ? cuoteroData.numCuotas : 0; // total original del cuotero
+    const cuotasPagadas  = Math.max(0, totalCuotasOriginal - numCuotas);
+    const montoCuota     = cuoteroData ? cuoteroData.montoCuota : 0;
+    // Deuda total = cuotas pendientes × monto de cuota (del cuotero)
+    const totalDeuda     = cuoteroData ? cuoteroData.totalDeuda : 0;
 
-    // Las cuotas sí vienen del Cuotero (solo para el plan de pagos futuros)
-    const cuotas = cuoteroData ? cuoteroData.cuotas : [];
-    const numCuotas = cuotas.length;
-
-    document.getElementById("stat-total").textContent  = totalDeuda.toLocaleString('es-PY');
-    const totalCuotasOriginal = cuoteroData ? cuoteroData.numCuotas : numCuotas;
-    const cuotasPagadas       = totalCuotasOriginal - numCuotas;
+    document.getElementById("stat-total").textContent  = totalDeuda > 0 ? totalDeuda.toLocaleString('es-PY') : '—';
     document.getElementById("stat-cuotas").textContent =
       totalCuotasOriginal > 0
         ? `${cuotasPagadas} / ${totalCuotasOriginal}`
-        : cuotasPagadas;
+        : '—';
     document.getElementById("stat-movs").textContent   = movimientos.length;
 
     // ── Progress bar ──
-    renderProgressBar(movimientos, cuoteroData);
+    renderProgressBar(cuoteroData);
 
     // ── Cuotas ──
-    const _totalOrig = cuoteroData ? cuoteroData.numCuotas : numCuotas;
-    const _pagadas   = Math.max(0, _totalOrig - numCuotas);
+    const _totalOrig = totalCuotasOriginal;
+    const _pagadas   = cuotasPagadas;
     document.getElementById("cuotas-count-badge").textContent =
       _totalOrig > 0
         ? `${_pagadas} pagada${_pagadas!==1?'s':''} · ${numCuotas} pendiente${numCuotas!==1?'s':''}`
@@ -1589,3 +1569,4 @@ function doLogout() {
 </script>
 </body>
 </html>
+
