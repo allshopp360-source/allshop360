@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AllShop — Portal de Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS — AllShop360 Brand
+═══════════════════════════════════════ */
+:root {
+  --blue:        #3b82f6;
+  --blue-dark:   #2563eb;
+  --blue-deeper: #1d4ed8;
+  --blue-light:  rgba(59,130,246,.12);
+  --blue-glow:   rgba(59,130,246,.2);
+  --amber:       #f59e0b;
+  --amber-light: rgba(245,158,11,.1);
+  --green:       #22c55e;
+  --red:         #f87171;
+  --teal:        #2dd4bf;
+
+  --ink:   #f1f5f9;
+  --ink-2: #cbd5e1;
+  --ink-3: #94a3b8;
+  --ink-4: #475569;
+  --ink-5: #2d3548;
+
+  --bg:       #0f1623;
+  --bg-2:     #141927;
+  --surface:  #1a2035;
+  --surface-2:#202740;
+  --line:     #252d42;
+  --line-2:   #1c2236;
+
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+
+  --sh-xs: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2);
+  --sh-sm: 0 4px 8px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.2);
+  --sh-md: 0 12px 28px rgba(0,0,0,.4), 0 5px 10px rgba(0,0,0,.25);
+  --sh-lg: 0 24px 56px rgba(0,0,0,.5), 0 10px 20px rgba(0,0,0,.3);
+  --sh-blue: 0 4px 20px rgba(59,130,246,.35);
+  --sh-green: 0 4px 20px rgba(34,197,94,.4);
+
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  --tr-fast: 0.14s cubic-bezier(.4,0,.2,1);
+  --tr-med:  0.22s cubic-bezier(.4,0,.2,1);
+  --tr-slow: 0.38s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── BG atmosphere ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(59,130,246,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.025) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+.bg-glow {
+  position: fixed; border-radius: 50%; filter: blur(160px); opacity: 0.07;
+  z-index: 0; pointer-events: none;
+  animation: floatGlow 14s ease-in-out infinite;
+}
+.bg-glow-1 { width: 700px; height: 700px; background: #2563eb; top: -280px; left: -240px; }
+.bg-glow-2 { width: 600px; height: 600px; background: #1d4ed8; bottom: -200px; right: -200px; animation-delay: -7s; }
+@keyframes floatGlow {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(30px,-25px) scale(1.06); }
+}
+.particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.particle {
+  position: absolute; width: 1.5px; height: 1.5px;
+  background: rgba(59,130,246,.45); border-radius: 50%;
+  animation: floatParticle linear infinite;
+}
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; } 90% { opacity: 1; }
+  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+
+/* ══════════════════════════════
+   ANNOUNCEMENT BAR
+══════════════════════════════ */
+.announcement {
+  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #1e3a8a 100%);
+  background-size: 200% 100%;
+  animation: shimmer-bar 6s ease-in-out infinite;
+  color: #fff;
+  text-align: center;
+  padding: 9px 1rem;
+  font-size: 0.775rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  position: relative; z-index: 200;
+}
+@keyframes shimmer-bar {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ══════════════════════════════
+   TOP NAV — AllShop360 style
+══════════════════════════════ */
+.top-nav {
+  position: sticky; top: 0; z-index: 400;
+  background: rgba(15,22,35,.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  box-shadow: 0 1px 0 rgba(255,255,255,.03), var(--sh-sm);
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 1.5rem;
+  gap: 1rem;
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-icon {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-blue); flex-shrink: 0;
+}
+.nav-logo-icon svg { color: #fff; }
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 1.2rem; font-weight: 800; letter-spacing: -0.4px;
+  color: var(--ink);
+}
+.nav-logo-text em { font-style: normal; color: var(--blue); }
+.nav-badge {
+  margin-left: 2px;
+  background: var(--blue-light);
+  border: 1px solid rgba(59,130,246,.3);
+  color: #7dd3fc;
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 2px 8px; border-radius: 50px;
+}
+.nav-right { display: flex; align-items: center; gap: .7rem; margin-left: auto; }
+.nav-client { display: flex; align-items: center; gap: 10px; }
+.nav-avatar {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 12px; font-weight: 800; color: #fff;
+  box-shadow: var(--sh-blue);
+}
+.nav-client-info { display: flex; flex-direction: column; line-height: 1.2; }
+.nav-client-label { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; }
+.nav-client-name { font-size: 13px; color: var(--ink); font-weight: 600; }
+
+.btn-ghost-sm {
+  height: 36px; padding: 0 14px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--line);
+  background: none; color: var(--ink-3);
+  font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all var(--tr-fast); letter-spacing: .04em;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-ghost-sm:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.btn-ghost-sm.danger:hover { border-color: var(--red); color: var(--red); background: rgba(248,113,113,.08); }
+.btn-back {
+  height: 36px; padding: 0 14px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--line);
+  background: none; color: var(--ink-3);
+  font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body);
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+  transition: all var(--tr-fast);
+}
+.btn-back:hover { border-color: var(--ink-3); color: var(--ink); }
+
+/* ══════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════ */
+#login-screen {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10; display: flex; align-items: center; justify-content: center;
+  padding: 20px; overflow-y: auto;
+}
+.login-wrap { width: 100%; max-width: 430px; animation: slideUp .65s cubic-bezier(.16,1,.3,1) both; }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(36px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.login-card {
+  background: rgba(20,25,39,.95);
+  backdrop-filter: blur(32px);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: var(--r-xl);
+  padding: 48px 40px 44px;
+  box-shadow:
+    0 0 0 1px rgba(59,130,246,.06),
+    0 50px 100px rgba(0,0,0,.7),
+    0 0 80px rgba(59,130,246,.06),
+    inset 0 1px 0 rgba(255,255,255,.07);
+  position: relative; overflow: hidden;
+}
+.login-card::before {
+  content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,.85), rgba(37,99,235,.4), transparent);
+}
+.login-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
+.login-logo-icon {
+  width: 50px; height: 50px; border-radius: 14px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-blue); flex-shrink: 0;
+}
+.login-logo-icon svg { color: #fff; }
+.login-brand-text { line-height: 1.2; }
+.login-brand-name {
+  font-family: var(--font-display); font-size: 20px; font-weight: 800;
+  letter-spacing: -0.5px; color: var(--ink);
+}
+.login-brand-name em { font-style: normal; color: var(--blue); }
+.login-brand-sub { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+
+.login-title {
+  font-family: var(--font-display); font-size: 28px; font-weight: 800;
+  line-height: 1.1; margin-bottom: 8px; letter-spacing: -0.8px; text-align: center;
+}
+.login-subtitle {
+  font-size: 13px; color: var(--ink-3); margin-bottom: 32px;
+  text-align: center; line-height: 1.6;
+}
+
+.field { margin-bottom: 18px; position: relative; }
+.field-label {
+  font-size: 11px; font-weight: 600; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 7px; display: block;
+}
+.field-icon {
+  width: 42px; height: 48px; position: absolute; bottom: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-4); pointer-events: none;
+}
+.field-input {
+  width: 100%; height: 48px;
+  background: rgba(255,255,255,.04);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  color: var(--ink); font-size: 14px; font-family: var(--font-body);
+  padding: 0 14px 0 42px; outline: none;
+  transition: border-color var(--tr-med), background var(--tr-med), box-shadow var(--tr-med);
+}
+.field-input:focus {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.06);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.14);
+}
+.field-input::placeholder { color: var(--ink-4); }
+.toggle-pw {
+  width: 42px; height: 48px; position: absolute; bottom: 0; right: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer; font-size: 14px;
+  color: var(--ink-4); transition: color var(--tr-fast);
+}
+.toggle-pw:hover { color: var(--blue); }
+.pw-field .field-input { padding-right: 42px; }
+
+.btn-login {
+  width: 100%; height: 50px; border-radius: var(--r-md); border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 50%, var(--blue-deeper) 100%);
+  background-size: 200% 200%;
+  color: #fff; font-family: var(--font-display); font-size: 15px; font-weight: 700;
+  letter-spacing: .3px; margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  box-shadow: var(--sh-blue), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: all .3s; animation: gradientShift 4s ease infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.btn-login:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37,99,235,.55), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.btn-login:active:not(:disabled) { transform: translateY(0); }
+.btn-login:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.btn-spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-box {
+  margin-top: 14px; padding: 12px 15px; border-radius: var(--r-sm);
+  background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.28);
+  font-size: 13px; color: var(--red); display: none;
+  animation: shake .4s ease; align-items: center; gap: 8px;
+}
+.error-box.show { display: flex; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.login-footer {
+  margin-top: 22px; text-align: center; font-size: 11.5px;
+  color: var(--ink-4); letter-spacing: .02em;
+}
+
+/* ══════════════════════════════
+   SUCCESS OVERLAY
+══════════════════════════════ */
+#success-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(15,22,35,.96);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  opacity: 0; pointer-events: none; transition: opacity .4s;
+}
+#success-overlay.show { opacity: 1; pointer-events: all; }
+.success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; box-shadow: var(--sh-blue);
+  animation: popIn .5s cubic-bezier(.16,1,.3,1);
+}
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+.success-text { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--green); }
+.success-sub { font-size: 13px; color: var(--ink-3); }
+
+/* ══════════════════════════════
+   DASHBOARD
+══════════════════════════════ */
+#dashboard { display: none; min-height: 100vh; position: relative; z-index: 10; }
+#dashboard.visible { display: block; }
+
+.main-content { max-width: 1080px; margin: 0 auto; padding: 36px 24px 70px; }
+
+/* Welcome banner */
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(37,99,235,.1) 0%, rgba(29,78,216,.05) 100%);
+  border: 1px solid rgba(59,130,246,.18);
+  border-radius: var(--r-lg); padding: 28px 32px; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  position: relative; overflow: hidden;
+}
+.welcome-banner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,.8), transparent);
+}
+.welcome-banner::after {
+  content: ''; position: absolute;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.07), transparent 70%);
+  right: -60px; bottom: -80px; pointer-events: none;
+}
+.welcome-left h1 {
+  font-family: var(--font-display); font-size: 24px; font-weight: 800;
+  line-height: 1.1; letter-spacing: -0.5px;
+}
+.welcome-left h1 span {
+  background: linear-gradient(90deg, var(--blue), #818cf8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.welcome-left p { color: var(--ink-3); font-size: 13px; margin-top: 6px; }
+.welcome-badge {
+  flex-shrink: 0; background: rgba(59,130,246,.1);
+  border: 1px solid rgba(59,130,246,.22); border-radius: var(--r-md);
+  padding: 10px 20px; text-align: center; position: relative; z-index: 1;
+}
+.welcome-badge-label { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em; }
+.welcome-badge-date { font-size: 13px; font-weight: 600; color: var(--blue); margin-top: 3px; }
+
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 22px 20px; position: relative; overflow: hidden;
+  transition: border-color var(--tr-med), transform var(--tr-med), box-shadow var(--tr-med);
+}
+.stat-card:hover { border-color: rgba(255,255,255,.13); transform: translateY(-3px); box-shadow: var(--sh-md); }
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent, linear-gradient(90deg, var(--blue), #818cf8)); opacity: .85;
+}
+.stat-card-glow {
+  position: absolute; width: 110px; height: 110px; border-radius: 50%;
+  background: var(--glow, rgba(59,130,246,.1));
+  filter: blur(36px); bottom: -36px; right: -18px; pointer-events: none;
+}
+.stat-icon { font-size: 20px; margin-bottom: 10px; }
+.stat-label { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.stat-value { font-family: var(--font-display); font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; }
+.stat-sub { font-size: 11.5px; color: var(--ink-3); margin-top: 5px; }
+
+/* Section headers */
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; margin-top: 32px; }
+.section-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+.section-badge {
+  padding: 3px 11px; border-radius: 50px; font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.badge-blue { background: var(--blue-light); color: #7dd3fc; border: 1px solid rgba(59,130,246,.25); }
+.badge-amber { background: var(--amber-light); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+.badge-green { background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.22); }
+
+/* Cuotas grid */
+.cuotas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 12px; }
+.cuota-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: 18px 18px; transition: all var(--tr-med);
+  position: relative; overflow: hidden;
+}
+.cuota-card:hover { border-color: rgba(255,255,255,.13); transform: translateY(-2px); box-shadow: var(--sh-sm); }
+.cuota-card.proxima {
+  border-color: rgba(245,158,11,.35);
+  background: rgba(245,158,11,.04);
+}
+.cuota-card.proxima::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--amber), #fb923c);
+}
+.cuota-num { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.cuota-fecha { font-family: var(--font-display); font-size: 14px; font-weight: 700; margin-bottom: 7px; }
+.cuota-monto { font-size: 19px; font-weight: 700; color: var(--blue); }
+.cuota-monto.amber { color: var(--amber); }
+.proxima-label {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--amber);
+}
+
+/* Alert box */
+.alert {
+  border-radius: var(--r-md); padding: 14px 18px; margin-bottom: 18px;
+  display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.55;
+}
+.alert-warn { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.22); color: #fcd34d; }
+.alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* Progress bar */
+.progress-wrap {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 20px 22px; margin-bottom: 24px; position: relative; overflow: hidden;
+}
+.progress-wrap::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,.6), rgba(59,130,246,.4), transparent);
+}
+.progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+.progress-label { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+.progress-stat-val { font-family: var(--font-display); font-size: 14px; font-weight: 700; line-height: 1; }
+.progress-stat-sub { font-size: 10px; color: var(--ink-3); margin-top: 2px; letter-spacing: .05em; text-transform: uppercase; }
+.progress-stat-val.blue { color: var(--blue); }
+.progress-bar-track {
+  height: 9px; background: rgba(255,255,255,.06); border-radius: 99px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  transition: width 1.2s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 0 12px rgba(34,197,94,.4);
+}
+.progress-pct {
+  margin-top: 8px; text-align: right;
+  font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--green);
+}
+
+/* Refresh button */
+.btn-refresh {
+  height: 34px; padding: 0 14px; border-radius: var(--r-sm);
+  border: 1.5px solid rgba(59,130,246,.28);
+  background: var(--blue-light); color: #7dd3fc;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body); transition: all var(--tr-fast);
+  letter-spacing: .04em; display: flex; align-items: center; gap: 6px;
+}
+.btn-refresh:hover:not(:disabled) {
+  background: rgba(59,130,246,.18);
+  border-color: rgba(59,130,246,.5);
+  transform: translateY(-1px);
+}
+.btn-refresh:disabled { opacity: .5; cursor: not-allowed; }
+.btn-refresh svg { transition: transform .5s; }
+.btn-refresh.spinning svg { animation: spinOnce .6s ease; }
+@keyframes spinOnce { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Transactions */
+.tx-table-wrap {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
+}
+.tx-table { width: 100%; border-collapse: collapse; }
+.tx-table th {
+  padding: 13px 18px; text-align: left; font-size: 10.5px; font-weight: 600;
+  color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.tx-table td {
+  padding: 13px 18px; font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: middle;
+}
+.tx-table tr:last-child td { border-bottom: none; }
+.tx-table tr:hover td { background: rgba(59,130,246,.03); }
+
+.tipo-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 50px; font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.tipo-venta { background: var(--blue-light); color: #7dd3fc; }
+.tipo-pago { background: rgba(34,197,94,.1); color: #4ade80; }
+.tx-monto { font-weight: 700; font-size: 13.5px; }
+.tx-monto.pos { color: var(--blue); }
+.tx-monto.neg { color: var(--green); }
+.tx-date { color: var(--ink-3); font-size: 12px; }
+
+/* Filter controls */
+.tx-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.filter-group { display: flex; gap: 5px; flex-wrap: wrap; }
+.btn-filter {
+  height: 30px; padding: 0 13px; border-radius: 50px;
+  border: 1.5px solid var(--line); background: transparent;
+  color: var(--ink-3); font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all var(--tr-fast); letter-spacing: .05em; text-transform: uppercase;
+}
+.btn-filter:hover { border-color: rgba(255,255,255,.18); color: var(--ink); }
+.btn-filter.active { background: var(--blue-light); border-color: rgba(59,130,246,.4); color: #7dd3fc; }
+.btn-filter.active.f-pago { background: rgba(34,197,94,.1); border-color: rgba(34,197,94,.35); color: #4ade80; }
+.tx-summary { font-size: 12px; color: var(--ink-3); }
+
+/* Pagination */
+.pagination { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 18px 0 4px; flex-wrap: wrap; }
+.btn-page {
+  min-width: 32px; height: 32px; padding: 0 9px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--line); background: transparent;
+  color: var(--ink-3); font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all var(--tr-fast); display: flex; align-items: center; justify-content: center;
+}
+.btn-page:hover:not(:disabled) { border-color: rgba(59,130,246,.4); color: #7dd3fc; }
+.btn-page.active { background: var(--blue-light); border-color: rgba(59,130,246,.5); color: #7dd3fc; font-weight: 700; }
+.btn-page:disabled { opacity: .3; cursor: not-allowed; }
+.page-info { font-size: 11px; color: var(--ink-3); padding: 0 6px; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--ink-3); }
+.empty-state .icon { font-size: 34px; margin-bottom: 12px; }
+.empty-state p { font-size: 13.5px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.18); }
+
+/* ══════════════════════════════
+   MOBILE
+══════════════════════════════ */
+@media (max-width: 700px) {
+  #login-screen { padding: 12px; }
+  .login-card { padding: 28px 22px 30px; border-radius: var(--r-lg); }
+  .login-logo { margin-bottom: 20px; }
+  .login-title { font-size: 24px; }
+  .login-subtitle { font-size: 12.5px; margin-bottom: 22px; }
+  .field { margin-bottom: 13px; }
+  .field-input { height: 46px; }
+  .field-icon { height: 46px; }
+  .toggle-pw { height: 46px; }
+  .btn-login { height: 48px; }
+
+  .top-nav { padding: 0 1rem; height: 58px; }
+  .nav-badge { display: none; }
+  .nav-client { display: none; }
+  .main-content { padding: 20px 14px 70px; }
+
+  .welcome-banner { flex-direction: column; gap: 12px; padding: 20px 18px; margin-bottom: 18px; border-radius: var(--r-md); }
+  .welcome-left h1 { font-size: 20px; }
+  .welcome-badge { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-radius: var(--r-sm); }
+  .welcome-badge-date { margin-top: 0; }
+
+  .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .stats-row .stat-card:last-child { grid-column: 1/-1; }
+  .stat-card { padding: 16px 14px; border-radius: var(--r-md); }
+  .stat-value { font-size: 20px; }
+
+  .section-header { margin-top: 22px; margin-bottom: 12px; }
+  .cuotas-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+  .cuota-card { padding: 14px 13px; }
+  .cuota-monto { font-size: 16px; }
+
+  .tx-controls { flex-direction: column; align-items: flex-start; gap: 7px; }
+  .tx-table-wrap { background: transparent; border: none; border-radius: 0; overflow: visible; }
+  .tx-table thead { display: none; }
+  .tx-table, .tx-table tbody { display: flex; flex-direction: column; gap: 9px; width: 100%; }
+  .tx-table tr {
+    display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto auto;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-md); padding: 13px 14px 11px; gap: 3px 8px;
+  }
+  .tx-table td { padding: 0; border: none; font-size: 13px; background: transparent !important; }
+  .tx-table td:nth-child(2) { grid-row: 1; grid-column: 1; }
+  .tx-table td:nth-child(5) { grid-row: 1; grid-column: 2; text-align: right; display: flex; align-items: center; justify-content: flex-end; }
+  .tx-table td:nth-child(3) { grid-row: 2; grid-column: 1/3; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .tx-table td:nth-child(4) { grid-row: 3; grid-column: 1; font-size: 12px; color: var(--ink-2); }
+  .tx-table td:nth-child(1) { grid-row: 3; grid-column: 2; font-size: 11px; color: var(--ink-3); text-align: right; display: flex; align-items: flex-end; justify-content: flex-end; }
+}
+@media (max-width: 380px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .stats-row .stat-card:last-child { grid-column: auto; }
+  .cuotas-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="particles" id="particles"></div>
+
+<!-- ANNOUNCEMENT -->
+<div class="announcement" id="ann-bar">
+  🔒 <strong>Portal privado</strong> · Solo para clientes AllShop · Tus datos están seguros
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div class="login-brand-text">
+          <div class="login-brand-name">All<em>Shop</em>360</div>
+          <div class="login-brand-sub">Portal de Clientes</div>
+        </div>
+      </div>
+
+      <div class="login-title">Bienvenido</div>
+      <div class="login-subtitle">Ingresá tu usuario y contraseña para ver tu estado de cuenta</div>
+
+      <div class="field">
+        <label class="field-label">Usuario</label>
+        <span class="field-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <input id="inp-user" class="field-input" type="text" placeholder="Tu nombre (sin espacios)" autocomplete="username" spellcheck="false">
+      </div>
+      <div class="field pw-field">
+        <label class="field-label">Contraseña</label>
+        <span class="field-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <input id="inp-pass" class="field-input" type="password" placeholder="••••••••••" autocomplete="current-password">
+        <button id="toggle-pw" class="toggle-pw" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+
+      <button class="btn-login" id="btn-login" onclick="doLogin()">
+        <span id="btn-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </span>
+        <span id="btn-label">Ingresar</span>
+        <div id="btn-spinner" class="btn-spinner"></div>
+      </button>
+
+      <div class="error-box" id="error-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="error-msg">Usuario o contraseña incorrectos.</span>
+      </div>
+
+      <div class="login-footer">Plataforma privada · Solo para clientes AllShop</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUCCESS OVERLAY ══ -->
+<div id="success-overlay">
+  <div class="success-icon">✓</div>
+  <div class="success-text">Acceso confirmado</div>
+  <div class="success-sub">Cargando tu estado de cuenta…</div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard">
+
+  <!-- Announcement en dashboard -->
+  <div class="announcement">
+    🛍️ <strong>AllShop360</strong> · Portal de Clientes · Estado de cuenta en tiempo real
+  </div>
+
+  <nav class="top-nav">
+    <a href="paginadeventas.html" class="btn-back" aria-label="Volver al catálogo">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Catálogo
+    </a>
+
+    <a href="paginadeventas.html" class="nav-brand" style="text-decoration:none;">
+      <div class="nav-logo-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </div>
+      <div class="nav-logo-text">All<em>Shop</em>360</div>
+      <span class="nav-badge">Portal</span>
+    </a>
+
+    <div class="nav-right">
+      <div class="nav-client">
+        <div class="nav-avatar" id="nav-avatar"></div>
+        <div class="nav-client-info">
+          <div class="nav-client-label">Mi cuenta</div>
+          <div class="nav-client-name" id="nav-client-name"></div>
+        </div>
+      </div>
+      <button class="btn-refresh btn-ghost-sm" id="btn-refresh" onclick="doRefresh()" title="Actualizar datos">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Actualizar
+      </button>
+      <button class="btn-ghost-sm danger" onclick="doLogout()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Salir
+      </button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <!-- Welcome -->
+    <div class="welcome-banner">
+      <div class="welcome-left">
+        <h1>Tu Estado de <span>Cuenta</span></h1>
+        <div id="welcome-client-wrap" style="display:none;margin-top:5px;">
+          <div id="welcome-client-name" style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--ink);line-height:1.1;"></div>
+          <p id="welcome-sub" style="font-size:12.5px;color:var(--ink-3);margin-top:3px;"></p>
+        </div>
+        <p id="welcome-sub-default">Resumen de compras y cuotas pendientes</p>
+      </div>
+      <div class="welcome-badge">
+        <div class="welcome-badge-label">Actualizado</div>
+        <div class="welcome-badge-date" id="today-date"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card" style="--accent:linear-gradient(90deg,var(--blue),#818cf8);--glow:rgba(59,130,246,.12);">
+        <div class="stat-card-glow"></div>
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Saldo Total</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">deuda pendiente</div>
+      </div>
+      <div class="stat-card" style="--accent:linear-gradient(90deg,var(--amber),#fb923c);--glow:rgba(245,158,11,.12);">
+        <div class="stat-card-glow"></div>
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">Cuotas Pagadas</div>
+        <div class="stat-value" id="stat-cuotas">—</div>
+        <div class="stat-sub">del total de cuotas</div>
+      </div>
+      <div class="stat-card" style="--accent:linear-gradient(90deg,var(--green),var(--teal));--glow:rgba(34,197,94,.12);">
+        <div class="stat-card-glow"></div>
+        <div class="stat-icon">📦</div>
+        <div class="stat-label">Movimientos</div>
+        <div class="stat-value" id="stat-movs">—</div>
+        <div class="stat-sub">registros totales</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap" id="progress-wrap" style="display:none;">
+      <div class="progress-header">
+        <div class="progress-label">📊 Progreso de pago</div>
+        <div>
+          <div class="progress-stat-val blue" id="prog-deuda">—</div>
+          <div class="progress-stat-sub">Pendiente a cancelar</div>
+        </div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-pct" id="progress-pct">0% completado</div>
+    </div>
+
+    <!-- Cuotas alert -->
+    <div class="alert alert-warn" id="cuota-alert" style="display:none;">
+      <span class="alert-icon">⚡</span>
+      <div><strong>Próxima cuota:</strong> <span id="cuota-alert-text"></span>. Recordá tenerla lista a tiempo.</div>
+    </div>
+
+    <!-- Cuotas -->
+    <div class="section-header">
+      <div class="section-title">📅 Plan de Cuotas</div>
+      <span class="section-badge badge-amber" id="cuotas-count-badge"></span>
+    </div>
+    <div class="cuotas-grid" id="cuotas-grid">
+      <div class="empty-state"><div class="icon">📭</div><p>Sin cuotas programadas</p></div>
+    </div>
+
+    <!-- Movimientos -->
+    <div class="section-header" style="margin-top:32px;">
+      <div class="section-title">📋 Movimientos</div>
+      <span class="section-badge badge-blue" id="movs-count-badge"></span>
+    </div>
+    <div class="tx-controls">
+      <div class="filter-group">
+        <button class="btn-filter active" id="f-todos" onclick="setFilter('todos')">Todos</button>
+        <button class="btn-filter" id="f-venta" onclick="setFilter('VENTA')">🛒 Compras</button>
+        <button class="btn-filter f-pago" id="f-pago" onclick="setFilter('PAGO')">✅ Pagos</button>
+      </div>
+      <div class="tx-summary" id="tx-summary"></div>
+    </div>
+
+    <div class="tx-table-wrap">
+      <table class="tx-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th style="text-align:right">Monto (Gs.)</th>
+          </tr>
+        </thead>
+        <tbody id="tx-tbody">
+          <tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><p>Sin movimientos</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIGURACIÓN
+// ══════════════════════════════════════════════════════════════════
+const SHEET_BASE_URL    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4sJRpZ7wf2dHKkkGpYkhAt1F0ysyRzvHwkNdw05r1APa7nO8ZFDSRmJ7SoQ64wSk8idaVYt0iu5-/pub?output=csv";
+const SHEET_CUOTERO_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSv4sJRpZ7wf2dHKkkGpYkhAt1F0ysyRzvHwkNdw05r1APa7nO8ZFDSRmJ7SoQ64wSk8idaVYt0iu5-/pub?gid=900301684&single=true&output=csv";
+
+let LOGINS = {};
+
+// ══════════════════════════════════════════════════════════════════
+// PARSER CSV
+// ══════════════════════════════════════════════════════════════════
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.split(/\r?\n/);
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
+      else { cur += ch; }
+    }
+    cells.push(cur.trim());
+    rows.push(cells);
+  }
+  return rows;
+}
+
+async function fetchCSV(url) {
+  const res = await fetch(url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now());
+  if (!res.ok) throw new Error("No se pudo leer el Sheet (" + res.status + ")");
+  return parseCSV(await res.text());
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FETCH CLIENT DATA
+// ══════════════════════════════════════════════════════════════════
+async function fetchClientData(clientKey) {
+  const rows = await fetchCSV(SHEET_BASE_URL);
+  const headers = rows[0];
+  const idx = {};
+  headers.forEach((h, i) => { idx[h.toUpperCase().trim()] = i; });
+  const iNombre = idx['NOMBRE'] ?? 1;
+  const iFecha  = idx['FECHA']  ?? 0;
+  const iTipo   = idx['TIPO DE MOVIMIENTO'] ?? 3;
+  const iProd   = idx['PRODUCTO'] ?? 4;
+  const iObs    = idx['OBSERVACION'] ?? idx['OBSERVACIÓN'] ?? 5;
+  const iMov    = idx['MOVIMIENTOS'] ?? 7;
+
+  const movimientos = [];
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || row.length < 4) continue;
+    const nombre = (row[iNombre] || '').trim();
+    if (nombre.toUpperCase() !== clientKey.toUpperCase()) continue;
+    const tipo = (row[iTipo] || '').trim().toUpperCase();
+    let monto = parseMontoPY(row[iMov] || '0');
+    const fechaRaw = (row[iFecha] || '').trim();
+    if (tipo !== 'VENTA' && monto > 0) monto = -monto;
+    if (tipo === 'VENTA' && monto < 0) monto = -monto;
+    movimientos.push({
+      fecha: parseFecha(fechaRaw), tipo,
+      producto: (row[iProd] || '').trim() || '—',
+      descripcion: (row[iObs] || '').trim() || '—',
+      monto
+    });
+  }
+  return movimientos;
+}
+
+async function fetchCuoteroData(clientKey) {
+  if (!SHEET_CUOTERO_URL) return null;
+  try {
+    const rows = await fetchCSV(SHEET_CUOTERO_URL);
+    if (rows.length < 2) return null;
+    const headers = rows[0];
+    for (let r = 1; r < rows.length; r++) {
+      const row = rows[r];
+      const nombre = (row[0] || '').trim();
+      if (nombre.toUpperCase() !== clientKey.toUpperCase()) continue;
+      const totalDeuda = parseNumero(row[1]);
+      const numCuotas  = parseInt(row[2]) || 0;
+      const montoCuota = parseNumero(row[3]);
+      const cuotas = [];
+      for (let c = 4; c < headers.length; c++) {
+        const montoMes = parseNumero(row[c]);
+        if (montoMes && montoMes > 0) {
+          cuotas.push({ fecha: normalizarMes(headers[c]), monto: montoMes });
+        }
+      }
+      return { totalDeuda, numCuotas, montoCuota, cuotas };
+    }
+    return null;
+  } catch(e) {
+    console.warn("No se pudo leer CUOTERO:", e);
+    return null;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════
+function parseMontoPY(str) {
+  if (!str) return 0;
+  let s = str.toString().trim();
+  if (!s || s === '-' || s === '0') return 0;
+  const isNeg = s.startsWith('-');
+  s = s.replace(/^-/, '');
+  const puntos = (s.match(/\./g) || []).length;
+  const comas  = (s.match(/,/g)  || []).length;
+  let num;
+  if (puntos > 1) { s = s.replace(/\./g, ''); num = parseFloat(s); }
+  else if (puntos === 1 && comas === 0) {
+    const partes = s.split('.');
+    if (partes[1] && partes[1].length === 3) { s = s.replace('.', ''); num = parseFloat(s); }
+    else { num = parseFloat(s); }
+  } else if (comas === 1 && puntos === 0) { num = parseFloat(s.replace(',', '.')); }
+  else if (comas >= 1) { s = s.replace(/,/g, ''); num = parseFloat(s); }
+  else { num = parseFloat(s.replace(/[^\d.]/g, '')) || 0; }
+  return isNeg ? -(num || 0) : (num || 0);
+}
+function parseNumero(str) { return parseMontoPY(str); }
+function parseFecha(str) {
+  if (!str) return '2026-01-01';
+  const m1 = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m1) return `${m1[3]}-${m1[2].padStart(2,'0')}-${m1[1].padStart(2,'0')}`;
+  const m2 = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m2) return str;
+  return '2026-01-01';
+}
+function normalizarMes(header) {
+  const meses = {enero:'01',febrero:'02',marzo:'03',abril:'04',mayo:'05',junio:'06',
+                 julio:'07',agosto:'08',septiembre:'09',octubre:'10',noviembre:'11',diciembre:'12'};
+  const parts = header.toLowerCase().trim().split(/\s+/);
+  const mes = meses[parts[0]]; const anio = parts[1];
+  if (mes && anio) return `${anio}-${mes}`;
+  return header;
+}
+function fmt(n) { return Math.abs(n).toLocaleString('es-PY') + ' Gs.'; }
+function fmtFecha(str) {
+  const [y,m,d] = str.split('-');
+  const meses = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${d||'01'} ${meses[parseInt(m)]} ${y}`;
+}
+function fmtMes(str) {
+  const [y,m] = str.split('-');
+  const meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  return `${meses[parseInt(m)]} ${y}`;
+}
+function toTitleCase(str) {
+  if (!str) return '';
+  const minor = new Set(['de','del','la','las','los','y','e','o','a','en','el']);
+  return str.toLowerCase().split(/\s+/).map((w, i) => {
+    if (i !== 0 && minor.has(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+}
+function nameToUsername(name) {
+  return name.trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+// ── Particles ──
+(function(){
+  const c = document.getElementById("particles");
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.cssText = `left:${Math.random()*100}%;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;animation-duration:${Math.random()*18+10}s;animation-delay:${Math.random()*-25}s;opacity:${Math.random()*0.35+0.08};`;
+    c.appendChild(p);
+  }
+})();
+
+document.getElementById('today-date').textContent = new Date().toLocaleDateString('es-PY', {day:'2-digit',month:'short',year:'numeric'});
+
+// ── Preload logins ──
+let loginsReady = false;
+async function preloadLogins() {
+  try {
+    const rows = await fetchCSV(SHEET_BASE_URL);
+    if (rows.length < 2) return;
+    const headers = rows[0];
+    const iNombre = (() => {
+      const idx = {};
+      headers.forEach((h,i) => { idx[h.toUpperCase().trim()] = i; });
+      return idx['NOMBRE'] ?? 1;
+    })();
+    const pwHash = await sha256("allshop360");
+    const seen = new Map();
+    for (let r = 1; r < rows.length; r++) {
+      const nombre = (rows[r][iNombre] || '').trim();
+      if (!nombre) continue;
+      const user = nameToUsername(nombre);
+      if (!seen.has(user)) {
+        seen.set(user, nombre);
+        LOGINS[user] = { pw_hash: pwHash, client_key: nombre };
+      }
+    }
+    loginsReady = true;
+  } catch(e) {
+    console.warn("No se pudieron precargar los logins:", e);
+    loginsReady = true;
+  }
+}
+preloadLogins();
+
+// ── Toggle password ──
+document.getElementById("toggle-pw").addEventListener("click", function() {
+  const inp = document.getElementById("inp-pass");
+  inp.type = inp.type === "password" ? "text" : "password";
+  this.innerHTML = inp.type === "password"
+    ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+});
+
+["inp-user","inp-pass"].forEach(id =>
+  document.getElementById(id).addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); })
+);
+
+// ── SHA-256 ──
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════════════
+let attempts = 0, locked = false;
+let _allMovimientos = [], _currentFilter = 'todos', _currentPage = 1;
+const PAGE_SIZE = 10;
+let _currentClientKey = '', _currentDisplayName = '';
+
+async function doLogin() {
+  if (locked) return;
+  const userRaw = document.getElementById("inp-user").value.trim();
+  const pass    = document.getElementById("inp-pass").value;
+  const btn     = document.getElementById("btn-login");
+  const err     = document.getElementById("error-box");
+
+  if (!userRaw || !pass) {
+    document.getElementById("error-msg").textContent = "Completá usuario y contraseña.";
+    err.classList.remove("show"); void err.offsetWidth; err.classList.add("show");
+    return;
+  }
+
+  btn.disabled = true;
+  document.getElementById("btn-icon").style.display   = "none";
+  document.getElementById("btn-label").style.display  = "none";
+  document.getElementById("btn-spinner").style.display = "block";
+  err.classList.remove("show");
+
+  if (!loginsReady) {
+    const t = Date.now();
+    while (!loginsReady && Date.now() - t < 5000) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  const user = nameToUsername(userRaw);
+  const hash = await sha256(pass);
+  const loginEntry = LOGINS[user];
+
+  if (loginEntry && hash === loginEntry.pw_hash) {
+    attempts = 0;
+    showDashboard(loginEntry.client_key, loginEntry.client_key);
+  } else {
+    attempts++;
+    btn.disabled = false;
+    document.getElementById("btn-icon").style.display   = "";
+    document.getElementById("btn-label").style.display  = "";
+    document.getElementById("btn-spinner").style.display = "none";
+
+    let msg = "Usuario o contraseña incorrectos.";
+    console.warn(`[AllShop] Login fallido. Usuario ingresado: "${user}"`);
+    console.warn(`[AllShop] Usuarios disponibles:`, Object.keys(LOGINS));
+    if (attempts >= 3) {
+      locked = true;
+      msg = "Demasiados intentos. Esperá 30 segundos.";
+      btn.disabled = true;
+      setTimeout(() => { locked = false; attempts = 0; btn.disabled = false; err.classList.remove("show"); }, 30000);
+    }
+    document.getElementById("error-msg").textContent = msg;
+    err.classList.remove("show"); void err.offsetWidth; err.classList.add("show");
+    ["inp-user","inp-pass"].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.borderColor = "rgba(248,113,113,0.6)";
+      el.style.background  = "rgba(248,113,113,0.05)";
+      setTimeout(() => { el.style.borderColor = ""; el.style.background = ""; }, 2000);
+    });
+  }
+}
+
+function showDashboard(clientKey, displayName) {
+  _currentClientKey   = clientKey;
+  _currentDisplayName = displayName;
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("ann-bar").style.display = "none";
+  document.getElementById("success-overlay").classList.add("show");
+  setTimeout(async () => {
+    await loadDashboard(clientKey, displayName);
+    document.getElementById("success-overlay").classList.remove("show");
+    document.getElementById("dashboard").classList.add("visible");
+  }, 1300);
+}
+
+async function loadDashboard(clientKey, displayName) {
+  const nombre   = toTitleCase(displayName || clientKey);
+  const iniciales = nombre.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById("nav-avatar").textContent      = iniciales;
+  document.getElementById("nav-client-name").textContent = nombre;
+  const wrapEl = document.getElementById("welcome-client-wrap");
+  if (wrapEl) {
+    wrapEl.style.display = 'block';
+    document.getElementById("welcome-client-name").textContent = nombre;
+    document.getElementById("welcome-sub").textContent = "Consultá tus compras, pagos y cuotas pendientes";
+    const def = document.getElementById("welcome-sub-default");
+    if (def) def.style.display = 'none';
+  }
+  document.getElementById("stat-total").textContent  = "…";
+  document.getElementById("stat-cuotas").textContent = "…";
+  document.getElementById("stat-movs").textContent   = "…";
+  document.getElementById("tx-tbody").innerHTML =
+    '<tr><td colspan="5"><div class="empty-state"><div class="icon">⏳</div><p>Cargando datos…</p></div></td></tr>';
+
+  try {
+    const [movimientos, cuoteroData] = await Promise.all([
+      fetchClientData(clientKey),
+      fetchCuoteroData(clientKey)
+    ]);
+
+    const cuotas             = cuoteroData ? cuoteroData.cuotas : [];
+    const numCuotas          = cuotas.length;
+    const totalCuotasOriginal= cuoteroData ? cuoteroData.numCuotas : 0;
+    const cuotasPagadas      = Math.max(0, totalCuotasOriginal - numCuotas);
+    const totalDeuda         = cuoteroData ? cuoteroData.totalDeuda : 0;
+
+    document.getElementById("stat-total").textContent  = totalDeuda > 0 ? totalDeuda.toLocaleString('es-PY') : '—';
+    document.getElementById("stat-cuotas").textContent =
+      totalCuotasOriginal > 0 ? `${cuotasPagadas} / ${totalCuotasOriginal}` : '—';
+    document.getElementById("stat-movs").textContent   = movimientos.length;
+
+    renderProgressBar(cuoteroData);
+
+    const _totalOrig = totalCuotasOriginal;
+    const _pagadas   = cuotasPagadas;
+    document.getElementById("cuotas-count-badge").textContent =
+      _totalOrig > 0
+        ? `${_pagadas} pagada${_pagadas!==1?'s':''} · ${numCuotas} pendiente${numCuotas!==1?'s':''}`
+        : `${numCuotas} cuota${numCuotas!==1?'s':''}`;
+
+    if (cuotas.length > 0) {
+      const proxima = cuotas[0];
+      document.getElementById("cuota-alert").style.display = "flex";
+      document.getElementById("cuota-alert-text").textContent =
+        `${fmtMes(proxima.fecha)} — ${fmt(proxima.monto)}`;
+      const grid = document.getElementById("cuotas-grid");
+      grid.innerHTML = '';
+      cuotas.forEach((c, i) => {
+        const isProx = i === 0;
+        const div = document.createElement('div');
+        div.className = 'cuota-card' + (isProx ? ' proxima' : '');
+        div.innerHTML = `
+          <div class="cuota-num">Cuota ${_pagadas + i + 1} de ${_totalOrig || cuotas.length}</div>
+          <div class="cuota-fecha">${fmtMes(c.fecha)}</div>
+          <div class="cuota-monto ${isProx ? 'amber' : ''}">${fmt(c.monto)}</div>
+          ${isProx ? '<div class="proxima-label">⚡ Próximo vencimiento</div>' : ''}
+        `;
+        grid.appendChild(div);
+      });
+    } else {
+      document.getElementById("cuotas-grid").innerHTML =
+        '<div class="empty-state"><div class="icon">📅</div><p>Configurá la URL del CUOTERO para ver las cuotas</p></div>';
+    }
+
+    document.getElementById("movs-count-badge").textContent = `${movimientos.length} registros`;
+    _allMovimientos = [...movimientos].sort((a,b) => b.fecha.localeCompare(a.fecha));
+    _currentFilter  = 'todos';
+    _currentPage    = 1;
+    ['todos','venta','pago'].forEach(id => document.getElementById('f-'+id).classList.remove('active'));
+    document.getElementById('f-todos').classList.add('active');
+    renderMovimientos();
+  } catch(e) {
+    console.error(e);
+    document.getElementById("tx-tbody").innerHTML =
+      `<tr><td colspan="5"><div class="empty-state"><div class="icon">⚠️</div><p>Error al cargar: ${e.message}</p></div></td></tr>`;
+    ["stat-total","stat-cuotas","stat-movs"].forEach(id => document.getElementById(id).textContent = "—");
+  }
+}
+
+// ── Filter / Pagination ──
+function setFilter(f) {
+  _currentFilter = f; _currentPage = 1;
+  ['todos','venta','pago'].forEach(id => document.getElementById('f-'+id).classList.remove('active'));
+  const map = { todos:'todos', VENTA:'venta', PAGO:'pago' };
+  document.getElementById('f-' + map[f]).classList.add('active');
+  renderMovimientos();
+}
+function filteredMovs() {
+  if (_currentFilter === 'todos') return _allMovimientos;
+  return _allMovimientos.filter(m => m.tipo === _currentFilter);
+}
+function renderMovimientos() {
+  const movs  = filteredMovs();
+  const total = movs.length;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (_currentPage > pages) _currentPage = pages;
+  const start = (_currentPage - 1) * PAGE_SIZE;
+  const slice = movs.slice(start, start + PAGE_SIZE);
+
+  const sumVentas = movs.filter(m=>m.tipo==='VENTA').reduce((s,m)=>s+m.monto,0);
+  const sumPagos  = movs.filter(m=>m.tipo!=='VENTA').reduce((s,m)=>s+Math.abs(m.monto),0);
+  let summaryTxt = `${total} registro${total!==1?'s':''}`;
+  if (_currentFilter==='todos' && total>0) summaryTxt += ` · Compras: ${fmt(sumVentas)} · Pagos: ${fmt(sumPagos)}`;
+  document.getElementById('tx-summary').textContent = summaryTxt;
+
+  const tbody = document.getElementById("tx-tbody");
+  if (total === 0) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">🔍</div><p>Sin movimientos para este filtro</p></div></td></tr>';
+    document.getElementById("pagination").innerHTML = '';
+    return;
+  }
+  tbody.innerHTML = slice.map(m => {
+    const isVenta = m.tipo === 'VENTA';
+    return `
+      <tr>
+        <td class="tx-date">${fmtFecha(m.fecha)}</td>
+        <td><span class="tipo-badge ${isVenta?'tipo-venta':'tipo-pago'}">${isVenta?'🛒 Compra':'✅ Pago'}</span></td>
+        <td style="color:var(--ink-2);font-size:12px;">${m.producto}</td>
+        <td style="font-size:13px;color:var(--ink-2);">${m.descripcion}</td>
+        <td style="text-align:right">
+          <div class="tx-monto ${isVenta?'pos':'neg'}">${isVenta?'+':'-'} ${fmt(m.monto)}</div>
+        </td>
+      </tr>`;
+  }).join('');
+  renderPagination(pages);
+}
+function renderPagination(pages) {
+  const el = document.getElementById('pagination');
+  if (pages <= 1) { el.innerHTML = ''; return; }
+  let html = `<button class="btn-page" onclick="goPage(${_currentPage-1})" ${_currentPage===1?'disabled':''}>‹</button>`;
+  let start = Math.max(1, _currentPage-2), end = Math.min(pages, start+4);
+  if (end-start<4) start = Math.max(1,end-4);
+  if (start>1) html += `<button class="btn-page" onclick="goPage(1)">1</button>${start>2?'<span class="page-info">…</span>':''}`;
+  for (let p=start;p<=end;p++) html += `<button class="btn-page ${p===_currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  if (end<pages) html += `${end<pages-1?'<span class="page-info">…</span>':''}<button class="btn-page" onclick="goPage(${pages})">${pages}</button>`;
+  html += `<button class="btn-page" onclick="goPage(${_currentPage+1})" ${_currentPage===pages?'disabled':''}>›</button>`;
+  el.innerHTML = html;
+}
+function goPage(p) {
+  _currentPage = p;
+  renderMovimientos();
+  document.querySelector('.tx-controls').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── Progress bar ──
+function renderProgressBar(cuoteroData) {
+  const wrap = document.getElementById('progress-wrap');
+  if (!cuoteroData || !cuoteroData.totalDeuda || cuoteroData.totalDeuda <= 0) { wrap.style.display='none'; return; }
+  const totalOriginal  = cuoteroData.numCuotas * cuoteroData.montoCuota || cuoteroData.totalDeuda;
+  const saldoPendiente = cuoteroData.totalDeuda;
+  const pagado         = Math.max(0, totalOriginal - saldoPendiente);
+  const pct            = Math.min(100, Math.round((pagado / totalOriginal) * 100));
+  wrap.style.display = 'block';
+  document.getElementById('prog-deuda').textContent   = fmt(saldoPendiente);
+  document.getElementById('progress-pct').textContent = `${pct}% completado`;
+  document.getElementById('progress-bar').style.width = '0%';
+  requestAnimationFrame(() => setTimeout(() => {
+    document.getElementById('progress-bar').style.width = pct + '%';
+  }, 200));
+}
+
+// ── Refresh ──
+async function doRefresh() {
+  if (!_currentClientKey) return;
+  const btn = document.getElementById('btn-refresh');
+  btn.disabled = true; btn.classList.add('spinning');
+  await loadDashboard(_currentClientKey, _currentDisplayName);
+  btn.disabled = false; btn.classList.remove('spinning');
+}
+
+// ── Logout ──
+function doLogout() {
+  if (!confirm("¿Cerrar sesión?")) return;
+  document.getElementById("dashboard").classList.remove("visible");
+  document.getElementById("inp-user").value = "";
+  document.getElementById("inp-pass").value = "";
+  document.getElementById("login-screen").style.display = "";
+  document.getElementById("ann-bar").style.display = "";
+  document.getElementById("error-box").classList.remove("show");
+  document.getElementById("cuota-alert").style.display = "none";
+  document.getElementById("cuotas-grid").innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Sin cuotas programadas</p></div>';
+  document.getElementById("tx-tbody").innerHTML = '';
+  document.getElementById("pagination").innerHTML = '';
+  document.getElementById("progress-wrap").style.display = 'none';
+  document.getElementById("progress-bar").style.width = '0%';
+  document.getElementById("nav-avatar").textContent = '';
+  document.getElementById("nav-client-name").textContent = '';
+  const wrapEl = document.getElementById("welcome-client-wrap");
+  if (wrapEl) wrapEl.style.display = 'none';
+  const defEl = document.getElementById("welcome-sub-default");
+  if (defEl) defEl.style.display = '';
+  _allMovimientos = []; _currentFilter = 'todos'; _currentPage = 1;
+  _currentClientKey = ''; _currentDisplayName = '';
+  attempts = 0; locked = false;
+}
+</script>
+</body>
+</html>
