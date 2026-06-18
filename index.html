@@ -477,34 +477,51 @@ body.light #searchInput:focus {
 .cat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: .25rem; }
 .cat-scroll::-webkit-scrollbar { display: none; }
 
-.cat-row { display: flex; gap: .4rem; padding: .25rem 0 .5rem; width: max-content; }
+.cat-row { display: flex; gap: .75rem; padding: .35rem 0 .6rem; width: max-content; }
 
 .cat-chip {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   gap: 7px;
-  padding: .48rem 1.05rem;
-  border-radius: 50px;
-  border: 1.5px solid var(--line);
-  background: var(--surface);
-  font-size: .82rem;
+  padding: .5rem .35rem .4rem;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  font-size: .72rem;
   font-weight: 600;
   color: var(--ink-3);
   cursor: pointer;
   transition: all var(--tr-med);
   white-space: nowrap;
   font-family: var(--font-body);
-  box-shadow: var(--sh-xs);
+  min-width: 64px;
 }
-.cat-chip:hover { border-color: var(--blue); color: #93c5fd; background: rgba(59,130,246,.07); }
-.cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.cat-chip.active {
+.cat-chip:hover .chip-icon-wrap { border-color: var(--blue); color: var(--blue); transform: scale(1.05); }
+.cat-chip:hover .chip-label { color: var(--blue); }
+.cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+.cat-chip.active .chip-icon-wrap {
   background: var(--blue);
   border-color: var(--blue);
   color: #fff;
   box-shadow: var(--sh-blue);
 }
-.cat-chip .chip-icon { font-size: .95rem; line-height: 1; }
+.cat-chip.active .chip-label { color: var(--blue); font-weight: 700; }
+
+.chip-icon-wrap {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--line-2, #e2e8f0);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-2);
+  background: var(--surface);
+  transition: all var(--tr-med);
+  flex-shrink: 0;
+  box-shadow: var(--sh-xs);
+}
+body.light .chip-icon-wrap { border-color: #e2e8f0; }
+.chip-icon-wrap svg { width: 22px; height: 22px; }
+.chip-label { font-size: .7rem; font-weight: 600; color: var(--ink-3); line-height: 1.2; text-align: center; max-width: 64px; }
 
 /* Brand panel */
 .brand-panel {
@@ -1516,7 +1533,8 @@ body.light footer {
 .sb-cat-item.active { background: var(--blue-light); }
 
 .sb-cat-left { display: flex; align-items: center; gap: 10px; flex:1; min-width:0; }
-.sb-cat-icon { font-size: 1.25rem; flex-shrink: 0; line-height: 1; width: 28px; text-align: center; }
+.sb-cat-icon { font-size: 1.25rem; flex-shrink: 0; line-height: 1; width: 28px; text-align: center; display:flex;align-items:center;justify-content:center; }
+.sb-icon-svg { width:18px;height:18px;stroke:currentColor; }
 .sb-cat-name {
   font-size: .88rem; font-weight: 600; color: var(--ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -2034,6 +2052,28 @@ body.light footer {
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSVoOJuinOSQtQoSPbvYwDAGcywAS4vEXou3cqHJp_FU2_DHCIEzDMlEMgxLalvzkPEA/exec';
 const WA_NUMBER  = '595976307394';
 
+// SVG icons para categorías — estilo círculo con borde (como imagen de referencia)
+const CAT_SVG = {
+  'Todos':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+  'Perfumería': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3h6v4H9z"/><path d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"/><path d="M12 3V1M10 1h4"/></svg>`,
+  'Ropa':       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>`,
+  'Electrónica':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>`,
+  'Hogar':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  'Deportes':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>`,
+  'Juguetes':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a5 5 0 015 5v1h1a3 3 0 010 6h-1v1a5 5 0 01-10 0v-1H6a3 3 0 010-6h1V7a5 5 0 015-5z"/></svg>`,
+  'Alimentos':  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>`,
+  'Camping':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2L2 19h20L12 2z"/><path d="M12 2v17M8 19l4-6 4 6"/></svg>`,
+  'Informática':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  'Bebidas':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+  'Tabacos':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 15h16v3H2z"/><path d="M20 15h2v3h-2z"/><path d="M18 11c0-2 2-2 2-4a3 3 0 00-3-3"/><path d="M14 9c0-2 2-2 2-4a3 3 0 00-3-3"/></svg>`,
+  'Accesorios': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>`,
+  'Calzado':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 17l4-10h1l2 5h2l2-3h1l3 5.5a2.5 2.5 0 01-2.5 2.5H4.5A2.5 2.5 0 012 17z"/><path d="M6 12h3M8 9l2 3"/></svg>`,
+  'Zapatillas': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 17l4-10h1l2 5h2l2-3h1l3 5.5a2.5 2.5 0 01-2.5 2.5H4.5A2.5 2.5 0 012 17z"/><path d="M6 12h3M8 9l2 3"/></svg>`,
+  'Zapatos':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 18c0 1.1.9 2 2 2h14a2 2 0 002-2v-2H3v2z"/><path d="M3 16l4-10h5l4 8"/><path d="M14 10h4l1 6"/></svg>`,
+  'Otros':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+};
+
+// Fallback emoji para placeholder de imagen
 const CAT_ICONS = {
   'Todos':'🛍️','Perfumería':'💄','Ropa':'👕','Electrónica':'📱',
   'Hogar':'🏠','Deportes':'⚽','Juguetes':'🧸','Alimentos':'🍎',
@@ -2265,7 +2305,7 @@ function buildSidebar() {
         onclick="toggleSbCat(${i}, '${cat.replace(/'/g,"\\'")}', ${hasBrands})"
         aria-expanded="${isActive}">
         <span class="sb-cat-left">
-          <span class="sb-cat-icon">${CAT_ICONS[cat]||'📦'}</span>
+      <span class="sb-cat-icon">${(CAT_SVG[cat]||CAT_SVG['Otros']).replace('viewBox','class="sb-icon-svg" viewBox')}</span>
           <span class="sb-cat-name">${cat}</span>
         </span>
         <span class="sb-cat-count">${counts[cat]||0}</span>
@@ -2341,8 +2381,9 @@ document.addEventListener('keydown', e => {
 // ═══════════════════════════════════════
 (function applyTheme() {
   const saved = localStorage.getItem('as360_theme');
-  // Por defecto: oscuro (dark). Cambia a 'light' si el usuario lo guardó.
-  if (saved === 'light') {
+  // Por defecto: claro (light). Cambia a 'dark' si el usuario lo guardó.
+  const isLight = saved !== 'dark';
+  if (isLight) {
     document.body.classList.add('light');
     const icon = document.getElementById('themeIcon');
     if (icon) icon.textContent = '☀️';
@@ -2393,11 +2434,13 @@ function hideLoaders() {
 // ═══════════════════════════════════════
 function buildCats() {
   const cats = ['Todos', ...new Set(products.map(p=>p.categoria).filter(Boolean))];
-  document.getElementById('catRow').innerHTML = cats.map(cat =>
-    `<button class="cat-chip ${cat===activeCat?'active':''}" onclick="setCategory('${cat}')" role="listitem" aria-pressed="${cat===activeCat}">
-      <span class="chip-icon" aria-hidden="true">${CAT_ICONS[cat]||'📦'}</span> ${cat}
-    </button>`
-  ).join('');
+  document.getElementById('catRow').innerHTML = cats.map(cat => {
+    const svg = CAT_SVG[cat] || CAT_SVG['Otros'];
+    return `<button class="cat-chip ${cat===activeCat?'active':''}" onclick="setCategory('${cat}')" role="listitem" aria-pressed="${cat===activeCat}">
+      <span class="chip-icon-wrap" aria-hidden="true">${svg}</span>
+      <span class="chip-label">${cat}</span>
+    </button>`;
+  }).join('');
 }
 function setCategory(cat) {
   activeCat = cat; activeMarca = '';
