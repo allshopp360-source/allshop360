@@ -477,34 +477,72 @@ body.light #searchInput:focus {
 .cat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: .25rem; }
 .cat-scroll::-webkit-scrollbar { display: none; }
 
-.cat-row { display: flex; gap: .4rem; padding: .25rem 0 .5rem; width: max-content; }
+.cat-row { display: flex; gap: .75rem; padding: .35rem 0 .6rem; width: max-content; }
 
 .cat-chip {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 7px;
-  padding: .48rem 1.05rem;
-  border-radius: 50px;
-  border: 1.5px solid var(--line);
-  background: var(--surface);
-  font-size: .82rem;
+  gap: 6px;
+  padding: .45rem .3rem .35rem;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  font-size: .72rem;
   font-weight: 600;
   color: var(--ink-3);
   cursor: pointer;
   transition: all var(--tr-med);
-  white-space: nowrap;
+  white-space: normal;
   font-family: var(--font-body);
-  box-shadow: var(--sh-xs);
+  width: 68px;
+  flex-shrink: 0;
 }
-.cat-chip:hover { border-color: var(--blue); color: #93c5fd; background: rgba(59,130,246,.07); }
-.cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.cat-chip.active {
+.cat-chip:hover .chip-icon-wrap { border-color: var(--blue); color: var(--blue); transform: scale(1.05); }
+.cat-chip:hover .chip-label { color: var(--blue); }
+.cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+.cat-chip.active .chip-icon-wrap {
   background: var(--blue);
   border-color: var(--blue);
   color: #fff;
   box-shadow: var(--sh-blue);
 }
-.cat-chip .chip-icon { font-size: .95rem; line-height: 1; }
+.cat-chip.active .chip-label { color: var(--blue); font-weight: 700; }
+
+.chip-icon-wrap {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--line-2, #e2e8f0);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-2);
+  background: var(--surface);
+  transition: all var(--tr-med);
+  flex-shrink: 0;
+  box-shadow: var(--sh-xs);
+  position: relative;
+}
+body.light .chip-icon-wrap { border-color: #e2e8f0; }
+.chip-icon-wrap svg { width: 20px; height: 20px; }
+.chip-icon-emoji {
+  position: absolute;
+  bottom: -3px; right: -3px;
+  width: 18px; height: 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  font-size: .65rem;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.chip-label {
+  font-size: .67rem;
+  font-weight: 600;
+  color: var(--ink-3);
+  line-height: 1.25;
+  text-align: center;
+  word-break: break-word;
+  width: 100%;
+}
 
 /* Brand panel */
 .brand-panel {
@@ -667,6 +705,176 @@ body.light #searchInput:focus {
   border-color: rgba(59,130,246,.25);
 }
 .pcard:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ── TOOLBAR (contador + dropdown filtros) ── */
+.toolbar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .9rem;
+  padding: .55rem .85rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-xs);
+}
+
+/* ── FILTER DROPDOWN BUTTON ── */
+.filter-dropdown-wrap { position: relative; flex-shrink: 0; }
+
+.filter-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .38rem .85rem;
+  border-radius: 50px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all var(--tr-med);
+  font-family: var(--font-body);
+  white-space: nowrap;
+}
+.filter-dropdown-btn svg:first-child { width: 15px; height: 15px; flex-shrink: 0; }
+.filter-dropdown-btn:hover { border-color: var(--blue); color: var(--blue); }
+.filter-dropdown-btn.open { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,.07); }
+.filter-dropdown-btn .chevron-icon { width: 12px; height: 12px; transition: transform var(--tr-med); }
+.filter-dropdown-btn.open .chevron-icon { transform: rotate(180deg); }
+
+.filter-count-badge {
+  min-width: 18px; height: 18px;
+  border-radius: 50px;
+  background: var(--blue);
+  color: #fff;
+  font-size: .66rem;
+  font-weight: 800;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+}
+
+/* ── FILTER DROPDOWN PANEL ── */
+.filter-dropdown-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 120;
+  min-width: 290px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  padding: 1rem;
+  animation: fdpIn .15s ease;
+}
+.filter-dropdown-panel.open { display: block; }
+@keyframes fdpIn { from { opacity:0; transform:translateY(-8px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+.fdp-section { margin-bottom: .1rem; }
+.fdp-label {
+  font-size: .67rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-4);
+  margin-bottom: .55rem;
+}
+.fdp-divider { height: 1px; background: var(--line); margin: .85rem 0; }
+
+/* Sort buttons inside panel */
+.fdp-sort-group { display: flex; flex-direction: column; gap: .3rem; }
+.fdp-sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: .48rem .7rem;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all var(--tr-med);
+  font-family: var(--font-body);
+  text-align: left;
+}
+.fdp-sort-btn svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--ink-4); }
+.fdp-sort-btn:hover { background: var(--bg); border-color: var(--line); color: var(--ink-1); }
+.fdp-sort-btn.active {
+  background: rgba(59,130,246,.1);
+  border-color: rgba(59,130,246,.3);
+  color: var(--blue);
+  font-weight: 700;
+}
+.fdp-sort-btn.active svg { color: var(--blue); }
+.fdp-favs-btn svg { fill: currentColor; color: #f43f5e; }
+.fdp-favs-btn.active { background: rgba(244,63,94,.08); border-color: rgba(244,63,94,.25); color: #f43f5e; }
+
+/* Price inputs (reused) */
+.price-inputs { display: flex; align-items: center; gap: .5rem; margin-bottom: .65rem; }
+.price-input-wrap { flex: 1; }
+.price-input-wrap label { display: block; font-size: .67rem; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .25rem; }
+.price-input-inner {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--bg);
+  transition: border-color var(--tr-med);
+}
+.price-input-inner:focus-within { border-color: var(--blue); }
+.currency-label { padding: .38rem .4rem; font-size: .68rem; font-weight: 700; color: var(--ink-3); background: var(--line); flex-shrink: 0; }
+.price-input-inner input { border: none; background: transparent; padding: .38rem .45rem; font-size: .8rem; color: var(--ink-1); font-family: var(--font-body); width: 100%; outline: none; }
+.price-separator { font-size: 1rem; color: var(--ink-3); flex-shrink: 0; margin-top: 1.2rem; }
+.price-actions { display: flex; gap: .5rem; }
+.btn-apply-price {
+  flex: 1; padding: .42rem .7rem; border-radius: var(--r-sm); border: none;
+  background: var(--blue); color: #fff; font-size: .78rem; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body); transition: opacity var(--tr-med);
+}
+.btn-apply-price:hover { opacity: .85; }
+.btn-clear-price {
+  padding: .42rem .7rem; border-radius: var(--r-sm);
+  border: 1.5px solid var(--line); background: transparent;
+  color: var(--ink-3); font-size: .78rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body); transition: all var(--tr-med);
+}
+.btn-clear-price:hover { border-color: #ef4444; color: #ef4444; }
+
+.fdp-clear-all {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  padding: .42rem .6rem; border-radius: var(--r-sm);
+  border: 1px solid var(--line); background: transparent;
+  color: var(--ink-3); font-size: .8rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body); transition: all var(--tr-med);
+}
+.fdp-clear-all svg { width: 13px; height: 13px; flex-shrink: 0; }
+.fdp-clear-all:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,.05); }
+
+/* ── FAV BUTTON ── */
+.pcard-img { position: relative; }
+.fav-btn {
+  position: absolute; top: 7px; right: 7px;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.85);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 3;
+  transition: all var(--tr-med);
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  color: #cbd5e1; padding: 0;
+}
+.fav-btn:hover { background: #fff; color: #f43f5e; transform: scale(1.12); }
+.fav-btn.active { color: #f43f5e; background: #fff1f2; }
+.fav-btn svg { width: 14px; height: 14px; }
+body:not(.light) .fav-btn { background: rgba(30,30,50,.75); color: #475569; }
+body:not(.light) .fav-btn:hover, body:not(.light) .fav-btn.active { background: rgba(30,30,50,.9); color: #f43f5e; }
 
 /* Slider card */
 .slider-track .pcard { width: 180px; flex-shrink: 0; }
@@ -1516,7 +1724,8 @@ body.light footer {
 .sb-cat-item.active { background: var(--blue-light); }
 
 .sb-cat-left { display: flex; align-items: center; gap: 10px; flex:1; min-width:0; }
-.sb-cat-icon { font-size: 1.25rem; flex-shrink: 0; line-height: 1; width: 28px; text-align: center; }
+.sb-cat-icon { font-size: 1.25rem; flex-shrink: 0; line-height: 1; width: 28px; text-align: center; display:flex;align-items:center;justify-content:center; }
+.sb-icon-svg { width:18px;height:18px;stroke:currentColor; }
 .sb-cat-name {
   font-size: .88rem; font-weight: 600; color: var(--ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -1853,8 +2062,86 @@ body.light footer {
         <span class="sec-title-icon blue" aria-hidden="true">🛍️</span>
         <span>Todo el <span>catálogo</span></span>
       </h2>
-      <div class="results-row" style="margin:0">
-        <span class="results-text" id="resultsText" aria-live="polite" aria-atomic="true"></span>
+    </div>
+
+    <!-- TOOLBAR: contador + dropdown filtros -->
+    <div class="toolbar-wrap">
+      <span class="results-text" id="resultsText" aria-live="polite" aria-atomic="true"></span>
+
+      <div class="filter-dropdown-wrap" id="filterDropdownWrap">
+        <button class="filter-dropdown-btn" id="filterDropdownBtn" onclick="toggleFilterDropdown()" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 5h14M6 10h8M9 15h2"/></svg>
+          Filtros
+          <span class="filter-count-badge" id="filterCountBadge" style="display:none">0</span>
+          <svg class="chevron-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+
+        <div class="filter-dropdown-panel" id="filterDropdownPanel" role="dialog" aria-label="Opciones de filtro y orden">
+
+          <!-- ORDENAR -->
+          <div class="fdp-section">
+            <div class="fdp-label">Ordenar por</div>
+            <div class="fdp-sort-group">
+              <button class="fdp-sort-btn active" data-sort="default"    onclick="setSort('default')">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+                Relevancia
+              </button>
+              <button class="fdp-sort-btn" data-sort="price_asc"  onclick="setSort('price_asc')">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v12M4 10l4 4 4-4"/></svg>
+                Menor precio
+              </button>
+              <button class="fdp-sort-btn" data-sort="price_desc" onclick="setSort('price_desc')">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 14V2M4 6l4-4 4 4"/></svg>
+                Mayor precio
+              </button>
+              <button class="fdp-sort-btn" data-sort="name_asc"   onclick="setSort('name_asc')">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h10M3 8h7M3 12h4"/></svg>
+                A → Z
+              </button>
+              <button class="fdp-sort-btn fdp-favs-btn" data-sort="favs" onclick="setSort('favs')">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.5l-1.1-1C3.4 9.4 1 7.3 1 4.7 1 2.8 2.5 1 4.5 1c1.1 0 2.2.5 2.9 1.3l.6.7.6-.7C9.3 1.5 10.4 1 11.5 1 13.5 1 15 2.8 15 4.7c0 2.6-2.4 4.7-5.9 7.8L8 13.5z"/></svg>
+                Solo favoritos
+              </button>
+            </div>
+          </div>
+
+          <div class="fdp-divider"></div>
+
+          <!-- PRECIO -->
+          <div class="fdp-section">
+            <div class="fdp-label">Rango de precio (Gs.)</div>
+            <div class="price-inputs">
+              <div class="price-input-wrap">
+                <label>Mínimo</label>
+                <div class="price-input-inner">
+                  <span class="currency-label">Gs.</span>
+                  <input type="text" id="priceMinInput" placeholder="0" oninput="formatInputPrice(this)" inputmode="numeric">
+                </div>
+              </div>
+              <div class="price-separator">—</div>
+              <div class="price-input-wrap">
+                <label>Máximo</label>
+                <div class="price-input-inner">
+                  <span class="currency-label">Gs.</span>
+                  <input type="text" id="priceMaxInput" placeholder="Sin límite" oninput="formatInputPrice(this)" inputmode="numeric">
+                </div>
+              </div>
+            </div>
+            <div class="price-actions">
+              <button class="btn-apply-price" onclick="applyPriceFilter()">Aplicar precio</button>
+              <button class="btn-clear-price"  onclick="clearPriceFilter()">Limpiar</button>
+            </div>
+          </div>
+
+          <div class="fdp-divider"></div>
+
+          <!-- LIMPIAR TODO -->
+          <button class="fdp-clear-all" onclick="clearAllFilters();closeFilterDropdown()">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3l10 10M13 3L3 13"/></svg>
+            Limpiar todos los filtros
+          </button>
+
+        </div>
       </div>
     </div>
 
@@ -2034,6 +2321,28 @@ body.light footer {
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSVoOJuinOSQtQoSPbvYwDAGcywAS4vEXou3cqHJp_FU2_DHCIEzDMlEMgxLalvzkPEA/exec';
 const WA_NUMBER  = '595976307394';
 
+// SVG icons para categorías — estilo círculo con borde (como imagen de referencia)
+const CAT_SVG = {
+  'Todos':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+  'Perfumería': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3h6v4H9z"/><path d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"/><path d="M12 3V1M10 1h4"/></svg>`,
+  'Ropa':       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>`,
+  'Electrónica':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>`,
+  'Hogar':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  'Deportes':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>`,
+  'Juguetes':   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a5 5 0 015 5v1h1a3 3 0 010 6h-1v1a5 5 0 01-10 0v-1H6a3 3 0 010-6h1V7a5 5 0 015-5z"/></svg>`,
+  'Alimentos':  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>`,
+  'Camping':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2L2 19h20L12 2z"/><path d="M12 2v17M8 19l4-6 4 6"/></svg>`,
+  'Informática':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  'Bebidas':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+  'Tabacos':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 15h16v3H2z"/><path d="M20 15h2v3h-2z"/><path d="M18 11c0-2 2-2 2-4a3 3 0 00-3-3"/><path d="M14 9c0-2 2-2 2-4a3 3 0 00-3-3"/></svg>`,
+  'Accesorios': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>`,
+  'Calzado':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 17l4-10h1l2 5h2l2-3h1l3 5.5a2.5 2.5 0 01-2.5 2.5H4.5A2.5 2.5 0 012 17z"/><path d="M6 12h3M8 9l2 3"/></svg>`,
+  'Zapatillas': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 17l4-10h1l2 5h2l2-3h1l3 5.5a2.5 2.5 0 01-2.5 2.5H4.5A2.5 2.5 0 012 17z"/><path d="M6 12h3M8 9l2 3"/></svg>`,
+  'Zapatos':    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 18c0 1.1.9 2 2 2h14a2 2 0 002-2v-2H3v2z"/><path d="M3 16l4-10h5l4 8"/><path d="M14 10h4l1 6"/></svg>`,
+  'Otros':      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+};
+
+// Fallback emoji para placeholder de imagen
 const CAT_ICONS = {
   'Todos':'🛍️','Perfumería':'💄','Ropa':'👕','Electrónica':'📱',
   'Hogar':'🏠','Deportes':'⚽','Juguetes':'🧸','Alimentos':'🍎',
@@ -2056,6 +2365,10 @@ const SIZE_HINTS = {
 let products    = [];
 let activeCat   = 'Todos';
 let activeMarca = '';
+let activeSort  = 'default';   // 'default' | 'price_asc' | 'price_desc' | 'name_asc'
+let priceMin    = null;
+let priceMax    = null;
+let favorites   = new Set(JSON.parse(localStorage.getItem('as360_favs') || '[]'));
 let currentProd = null;
 let gImgs = [], gIdx = 0, gTimer = null;
 let cart  = JSON.parse(localStorage.getItem('as360_cart') || '[]');
@@ -2265,7 +2578,7 @@ function buildSidebar() {
         onclick="toggleSbCat(${i}, '${cat.replace(/'/g,"\\'")}', ${hasBrands})"
         aria-expanded="${isActive}">
         <span class="sb-cat-left">
-          <span class="sb-cat-icon">${CAT_ICONS[cat]||'📦'}</span>
+      <span class="sb-cat-icon">${(CAT_SVG[cat]||CAT_SVG['Otros']).replace('viewBox','class="sb-icon-svg" viewBox')}</span>
           <span class="sb-cat-name">${cat}</span>
         </span>
         <span class="sb-cat-count">${counts[cat]||0}</span>
@@ -2341,8 +2654,9 @@ document.addEventListener('keydown', e => {
 // ═══════════════════════════════════════
 (function applyTheme() {
   const saved = localStorage.getItem('as360_theme');
-  // Por defecto: oscuro (dark). Cambia a 'light' si el usuario lo guardó.
-  if (saved === 'light') {
+  // Por defecto: claro (light). Cambia a 'dark' si el usuario lo guardó.
+  const isLight = saved !== 'dark';
+  if (isLight) {
     document.body.classList.add('light');
     const icon = document.getElementById('themeIcon');
     if (icon) icon.textContent = '☀️';
@@ -2393,11 +2707,18 @@ function hideLoaders() {
 // ═══════════════════════════════════════
 function buildCats() {
   const cats = ['Todos', ...new Set(products.map(p=>p.categoria).filter(Boolean))];
-  document.getElementById('catRow').innerHTML = cats.map(cat =>
-    `<button class="cat-chip ${cat===activeCat?'active':''}" onclick="setCategory('${cat}')" role="listitem" aria-pressed="${cat===activeCat}">
-      <span class="chip-icon" aria-hidden="true">${CAT_ICONS[cat]||'📦'}</span> ${cat}
-    </button>`
-  ).join('');
+  document.getElementById('catRow').innerHTML = cats.map(cat => {
+    const svg   = CAT_SVG[cat] || CAT_SVG['Otros'];
+    const emoji = CAT_ICONS[cat] || '📦';
+    const isActive = cat === activeCat;
+    return `<button class="cat-chip ${isActive?'active':''}" onclick="setCategory('${cat.replace(/'/g,"\\'")}')" role="listitem" aria-pressed="${isActive}">
+      <span class="chip-icon-wrap" aria-hidden="true">
+        ${svg}
+        <span class="chip-icon-emoji">${emoji}</span>
+      </span>
+      <span class="chip-label">${cat}</span>
+    </button>`;
+  }).join('');
 }
 function setCategory(cat) {
   activeCat = cat; activeMarca = '';
@@ -2423,8 +2744,22 @@ function updateActiveFilters() {
   const tags = [];
   if (activeCat!=='Todos') tags.push(`<div class="filter-tag"><span>${CAT_ICONS[activeCat]||'📦'} ${activeCat}</span><button onclick="setCategory('Todos')" aria-label="Quitar filtro ${activeCat}">✕</button></div>`);
   if (activeMarca) tags.push(`<div class="filter-tag"><span>🏷️ ${activeMarca}</span><button onclick="setMarca('${activeMarca.replace(/'/g,"\\'")}') " aria-label="Quitar filtro ${activeMarca}">✕</button></div>`);
-  if (tags.length>1) tags.push(`<button class="clear-all" onclick="setCategory('Todos')">Limpiar todo</button>`);
+  if (priceMin !== null || priceMax !== null) {
+    const label = priceMin && priceMax
+      ? `Gs. ${priceMin.toLocaleString('es-PY')} – ${priceMax.toLocaleString('es-PY')}`
+      : priceMin ? `Desde Gs. ${priceMin.toLocaleString('es-PY')}` : `Hasta Gs. ${priceMax.toLocaleString('es-PY')}`;
+    tags.push(`<div class="filter-tag price-tag"><span>💰 ${label}</span><button onclick="clearPriceFilter()" aria-label="Quitar filtro de precio">✕</button></div>`);
+  }
+  if (tags.length>1) tags.push(`<button class="clear-all" onclick="clearAllFilters()">Limpiar todo</button>`);
   el.innerHTML = tags.join('');
+  // Actualizar badge del panel de precio
+  const badge = document.getElementById('priceActiveBadge');
+  if (badge) badge.style.display = (priceMin!==null||priceMax!==null) ? 'inline' : 'none';
+}
+
+function clearAllFilters() {
+  setCategory('Todos');
+  clearPriceFilter();
 }
 
 // ═══════════════════════════════════════
@@ -2478,14 +2813,106 @@ function startAutoplay(id) {
 // ═══════════════════════════════════════
 // GRID PRINCIPAL
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════
+// FAVORITOS
+// ═══════════════════════════════════════
+function saveFavs() { localStorage.setItem('as360_favs', JSON.stringify([...favorites])); }
+function toggleFav(idx, e) {
+  e.stopPropagation();
+  if (favorites.has(idx)) { favorites.delete(idx); showToast('Eliminado de favoritos', 'info', 1600); }
+  else { favorites.add(idx); showToast('❤️ Guardado en favoritos', 'ok', 1600); }
+  saveFavs();
+  // Actualizar el botón sin re-renderizar todo
+  const btn = document.querySelector(`.fav-btn[data-idx="${idx}"]`);
+  if (btn) btn.classList.toggle('active', favorites.has(idx));
+}
+
+// ═══════════════════════════════════════
+// ORDENAMIENTO Y PRECIO
+// ═══════════════════════════════════════
+function setSort(val) {
+  activeSort = val;
+  document.querySelectorAll('.fdp-sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === val));
+  updateFilterBadge();
+  renderMain();
+}
+
+function toggleFilterDropdown() {
+  const panel = document.getElementById('filterDropdownPanel');
+  const btn   = document.getElementById('filterDropdownBtn');
+  const open  = panel.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
+function closeFilterDropdown() {
+  document.getElementById('filterDropdownPanel')?.classList.remove('open');
+  document.getElementById('filterDropdownBtn')?.classList.remove('open');
+  document.getElementById('filterDropdownBtn')?.setAttribute('aria-expanded','false');
+}
+// Cierra el dropdown si se hace clic fuera
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('filterDropdownWrap');
+  if (wrap && !wrap.contains(e.target)) closeFilterDropdown();
+});
+
+function updateFilterBadge() {
+  let count = 0;
+  if (activeSort !== 'default') count++;
+  if (priceMin !== null || priceMax !== null) count++;
+  const badge = document.getElementById('filterCountBadge');
+  if (badge) { badge.style.display = count > 0 ? 'inline-flex' : 'none'; badge.textContent = count; }
+}
+
+function applyPriceFilter() {
+  const minEl = document.getElementById('priceMinInput');
+  const maxEl = document.getElementById('priceMaxInput');
+  const minV = minEl?.value.replace(/\D/g,'');
+  const maxV = maxEl?.value.replace(/\D/g,'');
+  priceMin = minV ? parseInt(minV) : null;
+  priceMax = maxV ? parseInt(maxV) : null;
+  renderMain(); updateActiveFilters(); updateFilterBadge();
+}
+
+function clearPriceFilter() {
+  priceMin = null; priceMax = null;
+  const minEl = document.getElementById('priceMinInput');
+  const maxEl = document.getElementById('priceMaxInput');
+  if (minEl) minEl.value = '';
+  if (maxEl) maxEl.value = '';
+  renderMain(); updateActiveFilters(); updateFilterBadge();
+}
+
+function formatInputPrice(el) {
+  const raw = el.value.replace(/\D/g,'');
+  el.value = raw ? parseInt(raw).toLocaleString('es-PY') : '';
+}
+
 function renderMain() {
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const filtered = products.filter(p=>{
+  let filtered = products.filter(p=>{
     const matchCat   = activeCat==='Todos' || p.categoria===activeCat;
     const matchMarca = !activeMarca || (p.marca||'').trim()===activeMarca;
     const matchQ     = !q || [p.nombre,p.detalles,p.categoria,p.marca].some(s=>s?.toLowerCase().includes(q));
-    return matchCat && matchMarca && matchQ;
+    const price      = parseFloat(String(p.precio).replace(/[^0-9.]/g,''));
+    const matchMin   = priceMin===null || (!isNaN(price) && price >= priceMin);
+    const matchMax   = priceMax===null || (!isNaN(price) && price <= priceMax);
+    return matchCat && matchMarca && matchQ && matchMin && matchMax;
   });
+
+  // Ordenamiento
+  if (activeSort === 'price_asc') {
+    filtered.sort((a,b) => parseFloat(String(a.precio).replace(/[^0-9.]/g,'')) - parseFloat(String(b.precio).replace(/[^0-9.]/g,'')));
+  } else if (activeSort === 'price_desc') {
+    filtered.sort((a,b) => parseFloat(String(b.precio).replace(/[^0-9.]/g,'')) - parseFloat(String(a.precio).replace(/[^0-9.]/g,'')));
+  } else if (activeSort === 'name_asc') {
+    filtered.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'', 'es'));
+  } else if (activeSort === 'favs') {
+    filtered.sort((a,b) => {
+      const ai = products.indexOf(a), bi = products.indexOf(b);
+      return (favorites.has(bi)?1:0) - (favorites.has(ai)?1:0);
+    });
+  }
+
   const grid = document.getElementById('mainGrid');
   document.getElementById('main-loading').style.display = 'none';
   const total = products.length;
@@ -2518,6 +2945,9 @@ function cardHTML(p, idx, badgeHTML='', showDesc=false, q='') {
         : `<span class="pcard-img-ph" aria-hidden="true">${CAT_ICONS[p.categoria]||'📦'}</span>`
       }
       ${badgeHTML}
+      <button class="fav-btn ${favorites.has(idx)?'active':''}" data-idx="${idx}" onclick="toggleFav(${idx},event)" aria-label="${favorites.has(idx)?'Quitar de':'Agregar a'} favoritos" title="Favorito">
+        <svg viewBox="0 0 16 16" fill="${favorites.has(idx)?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6"><path d="M8 13.5l-1.1-1C3.4 9.4 1 7.3 1 4.7 1 2.8 2.5 1 4.5 1c1.1 0 2.2.5 2.9 1.3l.6.7.6-.7C9.3 1.5 10.4 1 11.5 1 13.5 1 15 2.8 15 4.7c0 2.6-2.4 4.7-5.9 7.8L8 13.5z"/></svg>
+      </button>
     </div>
     <div class="pcard-body">
       <div class="pcard-cat">${p.categoria||'Sin categoría'}${p.marca?` · <span style="font-weight:700;color:var(--ink-3)">${p.marca}</span>`:''}</div>
