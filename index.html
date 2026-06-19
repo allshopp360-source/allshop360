@@ -251,6 +251,181 @@ body.light .navbar {
 .btn-primary:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
 
 /* ═══════════════════════════════════════
+   PROMO BANNER ROTATIVO
+═══════════════════════════════════════ */
+.promo-banner {
+  position: relative;
+  overflow: hidden;
+  height: 140px;
+  background: #1a1a2e;
+  transition: height .4s ease, opacity .4s ease;
+}
+.promo-banner.hidden { height: 0; opacity: 0; pointer-events: none; }
+
+.promo-track {
+  display: flex;
+  height: 100%;
+  transition: transform .45s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+}
+
+.promo-slide {
+  min-width: 100%;
+  height: 140px;
+  background: linear-gradient(130deg, var(--bg1) 0%, var(--bg2) 60%, var(--bg3,var(--bg2)) 100%);
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 0 1.25rem 18px;
+}
+
+/* Decoraciones de fondo */
+.promo-bg-deco { position: absolute; inset: 0; pointer-events: none; }
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.deco-circle.c1 { width: 200px; height: 200px; top: -80px; right: -50px; opacity: .18; }
+.deco-circle.c2 { width: 110px; height: 110px; bottom: -50px; right: 140px; opacity: .1; }
+.deco-circle.c3 { width: 60px;  height: 60px;  top: 10px; right: 180px; opacity: .08; }
+
+/* Contenido */
+.promo-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.promo-emoji-big {
+  font-size: 3rem;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,.4));
+  animation: promoFloat 3s ease-in-out infinite;
+}
+@keyframes promoFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-5px) rotate(2deg); }
+}
+
+.promo-text { flex: 1; min-width: 0; }
+
+.promo-eyebrow {
+  font-size: .7rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 3px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+
+.promo-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+
+.promo-sub {
+  font-size: .7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  line-height: 1.35;
+  text-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+
+.promo-cta {
+  flex-shrink: 0;
+  padding: .55rem 1.1rem;
+  border-radius: 50px;
+  border: none;
+  background: var(--accent);
+  color: #000;
+  font-size: .75rem;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .2s ease;
+  white-space: nowrap;
+  letter-spacing: .02em;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+.promo-cta:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+.promo-cta:active { transform: scale(.97); }
+
+/* Controles */
+.promo-controls {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  z-index: 10;
+}
+
+.promo-dots { display: flex; gap: 5px; align-items: center; }
+.promo-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.4);
+  border: none;
+  cursor: pointer;
+  transition: all .3s ease;
+  padding: 0;
+}
+.promo-dot.active {
+  width: 20px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.promo-arrow {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.35);
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+  backdrop-filter: blur(6px);
+  padding: 0;
+}
+.promo-arrow svg { width: 12px; height: 12px; }
+.promo-arrow:hover { background: rgba(255,255,255,.3); border-color: rgba(255,255,255,.6); }
+
+/* Cerrar */
+.promo-close {
+  position: absolute;
+  top: 7px; right: 9px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.85);
+  font-size: .7rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  z-index: 10;
+  padding: 0;
+  backdrop-filter: blur(4px);
+}
+.promo-close:hover { background: rgba(0,0,0,.5); color: #fff; border-color: rgba(255,255,255,.5); }
+.promo-close:hover { background: rgba(255,255,255,.3); color: #fff; }
+
+/* ═══════════════════════════════════════
    HERO — Premium Gradient
 ═══════════════════════════════════════ */
 .hero {
@@ -490,7 +665,7 @@ body.light #searchInput:focus {
   cursor: pointer;
   transition: all var(--tr-med);
   font-family: var(--font-body);
-  width: 60px;
+  width: 62px;
   flex-shrink: 0;
 }
 .cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
@@ -525,12 +700,16 @@ body.light .chip-icon-wrap { border-color: #dde3ee; background: #fff; }
   font-size: .62rem;
   font-weight: 600;
   color: var(--ink-3);
-  line-height: 1.2;
+  line-height: 1.25;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 60px;
+  white-space: normal;
+  word-break: break-word;
+  hyphens: auto;
+  width: 62px;
+  min-height: 2em;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 .cat-chip:hover .chip-label { color: var(--blue); }
 .cat-chip.active .chip-label { color: var(--blue); font-weight: 700; }
@@ -1863,7 +2042,80 @@ body.light footer {
   </div>
 </header>
 
-<!-- SIDEBAR MENÚ CATEGORÍAS -->
+<!-- BANNER PROMOCIONAL ROTATIVO -->
+<div class="promo-banner" id="promoBanner" role="banner" aria-label="Promoción especial">
+  <div class="promo-track" id="promoTrack">
+
+    <!-- SLIDE 1: Día del Padre principal -->
+    <div class="promo-slide" style="--bg1:#0d1b2a;--bg2:#1b3a5c;--bg3:#1e4d7b;--accent:#fbbf24">
+      <div class="promo-bg-deco" aria-hidden="true">
+        <span class="deco-circle c1"></span>
+        <span class="deco-circle c2"></span>
+        <span class="deco-circle c3"></span>
+      </div>
+      <div class="promo-content">
+        <div class="promo-emoji-big">👔</div>
+        <div class="promo-text">
+          <div class="promo-eyebrow">🎁 Día del Padre</div>
+          <div class="promo-title">El mejor regalo<br>está acá</div>
+          <div class="promo-sub">Ropa, perfumes, electrónica y más</div>
+        </div>
+        <button class="promo-cta" onclick="scrollToAll()">Ver regalos</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Perfumes para papá -->
+    <div class="promo-slide" style="--bg1:#064e3b;--bg2:#065f46;--bg3:#047857;--accent:#34d399">
+      <div class="promo-bg-deco" aria-hidden="true">
+        <span class="deco-circle c1"></span>
+        <span class="deco-circle c2"></span>
+        <span class="deco-circle c3"></span>
+      </div>
+      <div class="promo-content">
+        <div class="promo-emoji-big">🧴</div>
+        <div class="promo-text">
+          <div class="promo-eyebrow">✨ Para papá</div>
+          <div class="promo-title">Perfumes<br>masculinos</div>
+          <div class="promo-sub">Fragancias premium con financiación</div>
+        </div>
+        <button class="promo-cta" onclick="setCategory('Perfumes Masculino');scrollToAll()">Ver perfumes</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Cuotas sin recargo -->
+    <div class="promo-slide" style="--bg1:#3b0764;--bg2:#581c87;--bg3:#6b21a8;--accent:#e879f9">
+      <div class="promo-bg-deco" aria-hidden="true">
+        <span class="deco-circle c1"></span>
+        <span class="deco-circle c2"></span>
+        <span class="deco-circle c3"></span>
+      </div>
+      <div class="promo-content">
+        <div class="promo-emoji-big">💳</div>
+        <div class="promo-text">
+          <div class="promo-eyebrow">🔥 Especial Junio</div>
+          <div class="promo-title">Pagá en<br>cuotas</div>
+          <div class="promo-sub">Financiación disponible en todo el catálogo</div>
+        </div>
+        <button class="promo-cta" onclick="scrollToAll()">Ver catálogo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Controles -->
+  <div class="promo-controls" aria-label="Navegación del banner">
+    <button class="promo-arrow promo-prev" onclick="promoPrev()" aria-label="Anterior">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 4L6 8l4 4"/></svg>
+    </button>
+    <div class="promo-dots" id="promoDots" role="tablist"></div>
+    <button class="promo-arrow promo-next" onclick="promoNext()" aria-label="Siguiente">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 4l4 4-4 4"/></svg>
+    </button>
+  </div>
+
+  <!-- Cerrar -->
+  <button class="promo-close" onclick="closeBanner()" aria-label="Cerrar banner">✕</button>
+</div>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <nav class="sidebar" id="sidebar" role="dialog" aria-modal="true" aria-label="Menú de categorías">
   <div class="sidebar-header">
@@ -2683,6 +2935,68 @@ document.addEventListener('keydown', e => {
   }
 })();
 
+// ═══════════════════════════════════════
+// PROMO BANNER ROTATIVO
+// ═══════════════════════════════════════
+(function initPromoBanner() {
+  let current = 0;
+  let timer = null;
+  const slides = document.querySelectorAll('.promo-slide');
+  const track  = document.getElementById('promoTrack');
+  const dotsEl = document.getElementById('promoDots');
+  const total  = slides.length;
+
+  // ¿Ya fue cerrado en esta sesión?
+  if (sessionStorage.getItem('promoClosed')) {
+    document.getElementById('promoBanner')?.classList.add('hidden');
+    return;
+  }
+
+  // Crear dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'promo-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Ir a slide ${i+1}`);
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(idx) {
+    current = (idx + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    document.querySelectorAll('.promo-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    resetTimer();
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(current + 1), 4500);
+  }
+
+  // Touch swipe
+  let startX = 0;
+  const banner = document.getElementById('promoBanner');
+  banner.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  banner.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // Pause on hover
+  banner.addEventListener('mouseenter', () => clearInterval(timer));
+  banner.addEventListener('mouseleave', resetTimer);
+
+  window.promoNext = () => goTo(current + 1);
+  window.promoPrev = () => goTo(current - 1);
+  window.closeBanner = () => {
+    document.getElementById('promoBanner').classList.add('hidden');
+    sessionStorage.setItem('promoClosed', '1');
+    clearInterval(timer);
+  };
+
+  resetTimer();
+})();
+
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light');
   localStorage.setItem('as360_theme', isLight ? 'light' : 'dark');
@@ -2725,14 +3039,27 @@ function hideLoaders() {
 // ═══════════════════════════════════════
 // CATEGORÍAS
 // ═══════════════════════════════════════
+// Etiquetas cortas para chips de categoría
+const CAT_SHORT = {
+  'Perfumes Femenino':   'P. Femenino',
+  'Perfumes Masculino':  'P. Masculino',
+  'Camisetas de Futbol': 'Camiseta Fut.',
+  'Ropa Niños':          'Ropa Niños',
+};
+
+function catShort(cat) {
+  return CAT_SHORT[cat] || cat;
+}
+
 function buildCats() {
   const cats = ['Todos', ...new Set(products.map(p=>p.categoria).filter(Boolean))];
   document.getElementById('catRow').innerHTML = cats.map(cat => {
     const emoji = CAT_ICONS[cat] || '📦';
+    const label = catShort(cat);
     const isActive = cat === activeCat;
     return `<button class="cat-chip ${isActive?'active':''}" onclick="setCategory('${cat.replace(/'/g,"\\'")}')" role="listitem" aria-pressed="${isActive}" title="${cat}">
       <span class="chip-icon-wrap">${emoji}</span>
-      <span class="chip-label">${cat}</span>
+      <span class="chip-label">${label}</span>
     </button>`;
   }).join('');
 }
