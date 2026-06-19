@@ -477,72 +477,63 @@ body.light #searchInput:focus {
 .cat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: .25rem; }
 .cat-scroll::-webkit-scrollbar { display: none; }
 
-.cat-row { display: flex; gap: .75rem; padding: .35rem 0 .6rem; width: max-content; }
+.cat-row { display: flex; gap: .5rem; padding: .3rem 0 .5rem; width: max-content; }
 
 .cat-chip {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: .45rem .3rem .35rem;
-  border-radius: var(--r-sm);
+  gap: 5px;
+  padding: 0;
   border: none;
   background: transparent;
-  font-size: .72rem;
-  font-weight: 600;
-  color: var(--ink-3);
   cursor: pointer;
   transition: all var(--tr-med);
-  white-space: normal;
   font-family: var(--font-body);
-  width: 68px;
+  width: 60px;
   flex-shrink: 0;
 }
-.cat-chip:hover .chip-icon-wrap { border-color: var(--blue); color: var(--blue); transform: scale(1.05); }
-.cat-chip:hover .chip-label { color: var(--blue); }
 .cat-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 8px; }
+
+/* Círculo del ícono */
+.chip-icon-wrap {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface);
+  transition: border-color var(--tr-med), background var(--tr-med), box-shadow var(--tr-med);
+  font-size: 1.3rem;
+  line-height: 1;
+  box-shadow: var(--sh-xs);
+}
+body.light .chip-icon-wrap { border-color: #dde3ee; background: #fff; }
+
+.cat-chip:hover .chip-icon-wrap {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+}
 .cat-chip.active .chip-icon-wrap {
   background: var(--blue);
   border-color: var(--blue);
-  color: #fff;
-  box-shadow: var(--sh-blue);
+  box-shadow: 0 3px 10px rgba(59,130,246,.35);
+  font-size: 1.15rem;
 }
-.cat-chip.active .chip-label { color: var(--blue); font-weight: 700; }
 
-.chip-icon-wrap {
-  width: 50px; height: 50px;
-  border-radius: 50%;
-  border: 2px solid var(--line-2, #e2e8f0);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--ink-2);
-  background: var(--surface);
-  transition: all var(--tr-med);
-  flex-shrink: 0;
-  box-shadow: var(--sh-xs);
-  position: relative;
-}
-body.light .chip-icon-wrap { border-color: #e2e8f0; }
-.chip-icon-wrap svg { width: 20px; height: 20px; }
-.chip-icon-emoji {
-  position: absolute;
-  bottom: -3px; right: -3px;
-  width: 18px; height: 18px;
-  background: var(--surface);
-  border: 1.5px solid var(--line);
-  border-radius: 50%;
-  font-size: .65rem;
-  display: flex; align-items: center; justify-content: center;
-  line-height: 1;
-}
+/* Texto debajo */
 .chip-label {
-  font-size: .67rem;
+  font-size: .62rem;
   font-weight: 600;
   color: var(--ink-3);
-  line-height: 1.25;
+  line-height: 1.2;
   text-align: center;
-  word-break: break-word;
-  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 60px;
 }
+.cat-chip:hover .chip-label { color: var(--blue); }
+.cat-chip.active .chip-label { color: var(--blue); font-weight: 700; }
 
 /* Brand panel */
 .brand-panel {
@@ -2344,11 +2335,40 @@ const CAT_SVG = {
 
 // Fallback emoji para placeholder de imagen
 const CAT_ICONS = {
-  'Todos':'🛍️','Perfumería':'💄','Ropa':'👕','Electrónica':'📱',
-  'Hogar':'🏠','Deportes':'⚽','Juguetes':'🧸','Alimentos':'🍎',
-  'Camping':'🏕️','Informática':'💻','Bebidas':'🥤','Tabacos':'🚬',
-  'Accesorios':'💍','Calzado':'👟','Zapatillas':'👟','Zapatos':'👞',
-  'Otros':'📦'
+  'Todos':        '🛍️',
+  'Perfumería':   '🌸',
+  'Ropa':         '👕',
+  'Electrónica':  '📱',
+  'Hogar':        '🏠',
+  'Deportes':     '⚽',
+  'Juguetes':     '🧸',
+  'Alimentos':    '🍎',
+  'Camping':      '🏕️',
+  'Informática':  '💻',
+  'Bebidas':      '🥤',
+  'Tabacos':      '🚬',
+  'Accesorios':   '💍',
+  'Calzado':      '👟',
+  'Zapatillas':   '👟',
+  'Zapatos':      '👞',
+  'Camisetas':    '👕',
+  'Camisetas de Futbol': '⚽',
+  'Perfumes Femenino':   '🌸',
+  'Perfumes Masculino':  '🧴',
+  'Ropa Niños':   '🧒',
+  'Jeans':        '👖',
+  'Bolsos':       '👜',
+  'Relojes':      '⌚',
+  'Lentes':       '🕶️',
+  'Celulares':    '📱',
+  'Televisores':  '📺',
+  'Cocina':       '🍳',
+  'Muebles':      '🛋️',
+  'Herramientas': '🔧',
+  'Jardín':       '🌿',
+  'Mascotas':     '🐾',
+  'Libros':       '📚',
+  'Otros':        '📦',
 };
 
 const SIZE_HINTS = {
@@ -2708,14 +2728,10 @@ function hideLoaders() {
 function buildCats() {
   const cats = ['Todos', ...new Set(products.map(p=>p.categoria).filter(Boolean))];
   document.getElementById('catRow').innerHTML = cats.map(cat => {
-    const svg   = CAT_SVG[cat] || CAT_SVG['Otros'];
     const emoji = CAT_ICONS[cat] || '📦';
     const isActive = cat === activeCat;
-    return `<button class="cat-chip ${isActive?'active':''}" onclick="setCategory('${cat.replace(/'/g,"\\'")}')" role="listitem" aria-pressed="${isActive}">
-      <span class="chip-icon-wrap" aria-hidden="true">
-        ${svg}
-        <span class="chip-icon-emoji">${emoji}</span>
-      </span>
+    return `<button class="cat-chip ${isActive?'active':''}" onclick="setCategory('${cat.replace(/'/g,"\\'")}')" role="listitem" aria-pressed="${isActive}" title="${cat}">
+      <span class="chip-icon-wrap">${emoji}</span>
       <span class="chip-label">${cat}</span>
     </button>`;
   }).join('');
